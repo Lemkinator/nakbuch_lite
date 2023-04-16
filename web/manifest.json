@@ -1,6 +1,6 @@
 {
-    "name": "nakbuch_lite",
-    "short_name": "nakbuch_lite",
+    "name": "NAK Buch Lite",
+    "short_name": "NAK Buch Lite",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

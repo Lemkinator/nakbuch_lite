@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'dart:ui';
+
+const nakbuchBlue = Color(0xFF6989C9);
 
 Buch buchFromRoute(String route) {
   if (route.startsWith(Buch.chorbuch.route())) return Buch.chorbuch;
@@ -29,13 +31,13 @@ enum Buch {
   String assetFileName() {
     switch (this) {
       case Buch.gesangbuch:
-        return 'hymnsGesangbuchNoCopyright.txt';
+        return 'hymnsGesangbuchNoCopyright.json';
       case Buch.chorbuch:
-        return 'hymnsChorbuchNoCopyright.txt';
+        return 'hymnsChorbuchNoCopyright.json';
       case Buch.jugendliederbuch:
-        return 'hymnsJugendliederbuchNoCopyright.txt';
+        return 'hymnsJugendliederbuchNoCopyright.json';
       case Buch.jbergaenzungsheft:
-        return 'hymnsJBErgaenzungsheftNoCopyright.txt';
+        return 'hymnsJBErgaenzungsheftNoCopyright.json';
     }
   }
 
@@ -51,43 +53,4 @@ enum Buch {
         return '/jbergaenzungsheft';
     }
   }
-}
-
-enum ColorSeed {
-  baseColor(Color(0xff6750a4)),
-  indigo(Colors.indigo),
-  blue(Colors.blue),
-  teal(Colors.teal),
-  green(Colors.green),
-  yellow(Colors.yellow),
-  orange(Colors.orange),
-  deepOrange(Colors.deepOrange),
-  pink(Colors.pink);
-
-  const ColorSeed(this.color);
-
-  String localizedLabel() {
-    switch (this) {
-      case ColorSeed.baseColor:
-        return 'M3 Baseline';
-      case ColorSeed.indigo:
-        return 'Indigo';
-      case ColorSeed.blue:
-        return 'Blue';
-      case ColorSeed.teal:
-        return 'Teal';
-      case ColorSeed.green:
-        return 'Green';
-      case ColorSeed.yellow:
-        return 'Yellow';
-      case ColorSeed.orange:
-        return 'Orange';
-      case ColorSeed.deepOrange:
-        return 'DeepOrange';
-      case ColorSeed.pink:
-        return 'Pink';
-    }
-  }
-
-  final Color color;
 }

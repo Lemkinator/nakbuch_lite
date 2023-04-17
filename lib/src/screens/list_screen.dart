@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../widgets.dart';
-
 class ListScreen extends StatelessWidget {
   const ListScreen({
     super.key,
@@ -9,13 +7,8 @@ class ListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-
-    return ScreenLayout(title: 'Liste', childs: <Widget>[
-      p(themeData, 'test liste'),
-      const SizedBox(height: 15),
-      p(themeData, 'test123'),
-      const SizedBox(height: 40),
-    ]);
+    return const Center(
+      child: Text('Dieser Tab ist leider noch in Entwicklung...'),
+    );
   }
 }

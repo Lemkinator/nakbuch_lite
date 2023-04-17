@@ -1,4 +1,8 @@
-import 'dart:io';
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data.dart';
 
@@ -8,7 +12,6 @@ class Lied {
   final String title;
   final String text;
   final String copyright;
-  final bool containsCopyRight;
 
   Lied({
     required this.number,
@@ -16,17 +19,31 @@ class Lied {
     required this.title,
     required this.text,
     required this.copyright,
-    required this.containsCopyRight,
   });
+
+  String numberAndTitle() => '$number. $title';
 }
 
-getLied(Buch buch, int number) {
-  return Lied(
-    number: number,
-    rubric: 0,
-    title: 'Lied $number',
-    text: 'Text von $number\n123text text text\n123text asdfasdfasdfasdfasdfalsdkfjahsldkjfhaskldjfhalksdjhfakljdhflkajsdflkajsdhflkajsdflkjashdlfkjhasdkjfhalskdjfhlaksjdfhalskdjfhalksdjfhasdklfjahsdf text text\n123text text text\n123text text text',
-    copyright: 'Copyright\nText von blabla',
-    containsCopyRight: false,
-  );
+Future<List<Lied>> getLieder(Buch buch, Future<SharedPreferences> futurePrefs, AssetBundle assetBundle) async {
+  var prefs = await futurePrefs;
+  var jsonString = prefs.getString('${buch.name()}_lieder');
+  jsonString ??= await assetBundle.loadString(buch.assetFileName());
+  return jsonDecode(jsonString)
+      .map<Lied>((json) => Lied(
+            number: json['hymnNr'],
+            rubric: json['hymnRubricIndex'],
+            title: json['hymnTitle'],
+            text: json['hymnText'],
+            copyright: json['hymnCopyright'],
+          ))
+      .toList();
+}
+
+Future<Lied> getLied(Buch buch, int number, Future<SharedPreferences> futurePrefs, AssetBundle assetBundle) async {
+  var lieder = await getLieder(buch, futurePrefs, assetBundle);
+  if (number > 0 && number <= lieder.length) {
+    return lieder[number - 1];
+  } else {
+    return Lied(number: number, rubric: 0, title: '??', text: 'Das Lied mit der Nummer $number aus dem ${buch.name()} kenne ich nicht :(', copyright: '');
+  }
 }

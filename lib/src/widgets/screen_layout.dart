@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import '../widgets.dart';
 
 class ScreenLayout extends StatelessWidget {
-  final String title;
-  final bool showAppBar;
+  final String? title;
   final String? subtitle;
   final String? backgroundImage;
 
@@ -13,8 +12,7 @@ class ScreenLayout extends StatelessWidget {
 
   const ScreenLayout({
     Key? key,
-    required this.title,
-    this.showAppBar = true,
+    this.title,
     this.subtitle,
     this.backgroundImage,
     this.maxWidth = 1000,
@@ -24,16 +22,16 @@ class ScreenLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: showAppBar
+      appBar: title != null
           ? AppBar(
-              title: Text(title),
+              title: Text(title!),
             )
           : null,
       body: CustomScrollView(
         slivers: [
-          if (backgroundImage != null)
+          if (title != null && backgroundImage != null)
             SliverBanner(
-              title: title,
+              title: title!,
               subtitle: subtitle,
               backgroundImage: backgroundImage!,
             ),

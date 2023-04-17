@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:dynamic_color/dynamic_color.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'data.dart';
 import 'routing.dart';
 import 'screens/navigator.dart';
-import 'data.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -18,30 +19,44 @@ class _HomeState extends State<Home> {
   late final SimpleRouterDelegate _routerDelegate;
   late final TemplateRouteParser _routeParser;
 
+
   bool useMaterial3 = true;
   ThemeMode themeMode = ThemeMode.system;
-  ColorSeed colorSelected = ColorSeed.blue;
 
-  bool get useLightMode {
-    switch (themeMode) {
-      case ThemeMode.system:
-        return SchedulerBinding.instance.window.platformBrightness == Brightness.light;
-      case ThemeMode.light:
-        return true;
-      case ThemeMode.dark:
-        return false;
-    }
-  }
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  void handleBrightnessChange(bool useLightMode) {
+  void handleThemeModeChange(ThemeMode? newThemeMode) {
     setState(() {
-      themeMode = useLightMode ? ThemeMode.light : ThemeMode.dark;
+      if (newThemeMode != null) {
+        themeMode = newThemeMode;
+      } else {
+        if (themeMode == ThemeMode.system) {
+          themeMode = ThemeMode.dark;
+        } else if (themeMode == ThemeMode.dark) {
+          themeMode = ThemeMode.light;
+        } else {
+          themeMode = ThemeMode.system;
+        }
+      }
+      _prefs.then((SharedPreferences prefs) {
+        if (themeMode == ThemeMode.system) {
+          prefs.setString('themeMode', 'system');
+        } else if (themeMode == ThemeMode.dark) {
+          prefs.setString('themeMode', 'dark');
+        } else {
+          prefs.setString('themeMode', 'light');
+        }
+      });
     });
   }
 
-  void handleColorSelect(int value) {
-    setState(() {
-      colorSelected = ColorSeed.values[value];
+  void handleBuchChange(Buch buch) {
+    var path = _routeState.route.path;
+    var relativeRouteIndex = path.indexOf('/', 1);
+    var relativeRoute = relativeRouteIndex == -1 ? '' : path.substring(relativeRouteIndex);
+    _routeState.go('${buch.route()}$relativeRoute');
+    _prefs.then((SharedPreferences prefs) {
+      prefs.setString('buch', buch.name());
     });
   }
 
@@ -50,6 +65,7 @@ class _HomeState extends State<Home> {
     /// Configure the parser with all of the app's allowed path templates.
     _routeParser = TemplateRouteParser(
       allowedPaths: [
+        '/',
         '/gesangbuch',
         '/chorbuch',
         '/jugendliederbuch',
@@ -66,9 +82,17 @@ class _HomeState extends State<Home> {
         '/chorbuch/lied/:liedId',
         '/jugendliederbuch/lied/:liedId',
         '/jbergaenzungsheft/lied/:liedId',
+        '/gb',
+        '/cb',
+        '/jb',
+        '/jbe',
+        '/gb/:liedId',
+        '/cb/:liedId',
+        '/jb/:liedId',
+        '/jbe/:liedId',
         //'/author/:authorId',
       ],
-      initialRoute: '/gesangbuch',
+      initialRoute: '/',
     );
 
     _routeState = RouteState(_routeParser);
@@ -78,56 +102,99 @@ class _HomeState extends State<Home> {
       navigatorKey: _navigatorKey,
       builder: (context) => HomeNavigator(
         navigatorKey: _navigatorKey,
-        useLightMode: useLightMode,
-        colorSelected: colorSelected,
-        handleBrightnessChange: handleBrightnessChange,
-        handleColorSelect: handleColorSelect,
+        themeMode: themeMode,
+        handleThemeModeChange: handleThemeModeChange,
+        handleBuchChange: handleBuchChange,
       ),
     );
+
+    _prefs.then((SharedPreferences prefs) {
+      return prefs.getString('themeMode') ?? 'system';
+    }).then((String? themeModeString) {
+      if (themeModeString == 'system') {
+        return ThemeMode.system;
+      } else if (themeModeString == 'dark') {
+        return ThemeMode.dark;
+      } else {
+        return ThemeMode.light;
+      }
+    }).then((ThemeMode themeMode) {
+      setState(() {
+        this.themeMode = themeMode;
+      });
+    });
 
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) => RouteStateScope(
-        notifier: _routeState,
-        child: MaterialApp.router(
-          routerDelegate: _routerDelegate,
-          routeInformationParser: _routeParser,
-          // Revert back to pre-Flutter-2.5 transition behavior:
-          // https://github.com/flutter/flutter/issues/82053
-          debugShowCheckedModeBanner: false,
-          title: 'NAK Buch Lite',
-          themeMode: themeMode,
-          theme: ThemeData(
-            pageTransitionsTheme: const PageTransitionsTheme(
-              builders: {
-                TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-                TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
-                TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
-                TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
-              },
+  Widget build(BuildContext context) => DynamicColorBuilder(
+        builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+          ColorScheme lightColorScheme;
+          ColorScheme darkColorScheme;
+
+          if (lightDynamic != null && darkDynamic != null) {
+            // On Android S+ devices, use the provided dynamic color scheme.
+            // (Recommended) Harmonize the dynamic color scheme' built-in semantic colors.
+            lightColorScheme = lightDynamic.harmonized();
+            // (Optional) Customize the scheme as desired. For example, one might
+            // want to use a brand color to override the dynamic [ColorScheme.secondary].
+            lightColorScheme = lightColorScheme.copyWith(secondary: nakbuchBlue);
+            // Repeat for the dark color scheme.
+            darkColorScheme = darkDynamic.harmonized();
+            darkColorScheme = darkColorScheme.copyWith(secondary: nakbuchBlue);
+          } else {
+            // Otherwise, use fallback schemes.
+            lightColorScheme = ColorScheme.fromSeed(
+              seedColor: nakbuchBlue,
+            );
+            darkColorScheme = ColorScheme.fromSeed(
+              seedColor: nakbuchBlue,
+              brightness: Brightness.dark,
+            );
+          }
+
+          return RouteStateScope(
+            notifier: _routeState,
+            child: MaterialApp.router(
+              routerDelegate: _routerDelegate,
+              routeInformationParser: _routeParser,
+              // Revert back to pre-Flutter-2.5 transition behavior:
+              // https://github.com/flutter/flutter/issues/82053
+              debugShowCheckedModeBanner: false,
+              title: 'NAK Buch Lite',
+              themeMode: themeMode,
+              theme: ThemeData(
+                pageTransitionsTheme: const PageTransitionsTheme(
+                  builders: {
+                    TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+                    TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+                    TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+                    TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+                    TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+                  },
+                ),
+                colorScheme: lightColorScheme,
+                useMaterial3: useMaterial3,
+                brightness: Brightness.light,
+              ),
+              darkTheme: ThemeData(
+                pageTransitionsTheme: const PageTransitionsTheme(
+                  builders: {
+                    TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+                    TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+                    TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+                    TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+                    TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+                  },
+                ),
+                colorScheme: darkColorScheme,
+                useMaterial3: useMaterial3,
+                brightness: Brightness.dark,
+              ),
             ),
-            colorSchemeSeed: colorSelected.color,
-            useMaterial3: useMaterial3,
-            brightness: Brightness.light,
-          ),
-          darkTheme: ThemeData(
-            pageTransitionsTheme: const PageTransitionsTheme(
-              builders: {
-                TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-                TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
-                TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
-                TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
-              },
-            ),
-            colorSchemeSeed: colorSelected.color,
-            useMaterial3: useMaterial3,
-            brightness: Brightness.dark,
-          ),
-        ),
+          );
+        },
       );
 
   @override

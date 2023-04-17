@@ -7,20 +7,25 @@ bool _isLargeScreen(BuildContext context) => getWindowType(context) >= AdaptiveW
 
 bool _isMediumScreen(BuildContext context) => getWindowType(context) == AdaptiveWindowType.medium;
 
-class NavigationTrailing extends StatelessWidget {
+class NavigationTrailing extends StatefulWidget {
   const NavigationTrailing({
     Key? key,
-    required this.useLightMode,
-    required this.colorSelected,
-    required this.handleBrightnessChange,
-    required this.handleColorSelect,
+    required this.themeMode,
+    required this.handleThemeModeChange,
+    required this.buch,
+    required this.handleBuchChange,
   }) : super(key: key);
 
-  final bool useLightMode;
-  final ColorSeed colorSelected;
-  final void Function(bool useLightMode) handleBrightnessChange;
-  final void Function(int value) handleColorSelect;
+  final ThemeMode themeMode;
+  final void Function(ThemeMode?) handleThemeModeChange;
+  final Buch buch;
+  final void Function(Buch) handleBuchChange;
 
+  @override
+  State<NavigationTrailing> createState() => _NavigationTrailingState();
+}
+
+class _NavigationTrailingState extends State<NavigationTrailing> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -37,33 +42,50 @@ class NavigationTrailing extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              children: [
-                const Text('Hell'),
-                Expanded(child: Container()),
-                Switch(
-                    value: useLightMode,
-                    onChanged: (value) {
-                      handleBrightnessChange(value);
-                    })
-              ],
+            InkWell(
+              borderRadius: BorderRadius.circular(16),
+              onTap: () {
+                widget.handleThemeModeChange(null);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    const Text('Thema'),
+                    Expanded(child: Container()),
+                    widget.themeMode == ThemeMode.light
+                        ? const Icon(Icons.light_mode_outlined)
+                        : widget.themeMode == ThemeMode.dark
+                            ? const Icon(Icons.dark_mode_outlined)
+                            : const Icon(Icons.brightness_auto_outlined),
+                  ],
+                ),
+              ),
             ),
             const Divider(),
             ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 200.0),
-              child: GridView.count(
-                crossAxisCount: 3,
-                children: List.generate(
-                    ColorSeed.values.length,
-                    (i) => IconButton(
-                          icon: const Icon(Icons.radio_button_unchecked),
-                          color: ColorSeed.values[i].color,
-                          isSelected: colorSelected.color == ColorSeed.values[i].color,
-                          selectedIcon: const Icon(Icons.circle),
-                          onPressed: () {
-                            handleColorSelect(i);
-                          },
-                        )),
+              constraints: const BoxConstraints(maxHeight: 200),
+              child: ListView.builder(
+                itemCount: 4,
+                itemBuilder: (context, i) => InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () {
+                    widget.handleBuchChange(Buch.values[i]);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        //colored text
+                        widget.buch == Buch.values[i]
+                            ? Text(Buch.values[i].name(), style: const TextStyle(color: nakbuchBlue))
+                            : Text(Buch.values[i].name()),
+                        Expanded(child: Container()),
+                        widget.buch == Buch.values[i] ? const Icon(Icons.menu_book, color: nakbuchBlue) : const Icon(Icons.menu_book),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
@@ -74,15 +96,16 @@ class NavigationTrailing extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Flexible(
-            child: _BrightnessButton(
-              handleBrightnessChange: handleBrightnessChange,
+            child: _ThemeModeButton(
+              themeMode: widget.themeMode,
+              handleThemeModeChange: () => widget.handleThemeModeChange(null),
               showTooltipBelow: false,
             ),
           ),
           Flexible(
-            child: _ColorSeedButton(
-              handleColorSelect: handleColorSelect,
-              colorSelected: colorSelected,
+            child: _BuchButton(
+              buch: widget.buch,
+              handleBuchChange: widget.handleBuchChange,
             ),
           ),
         ],
@@ -91,90 +114,92 @@ class NavigationTrailing extends StatelessWidget {
 
 List<Widget> appBarActions(
   BuildContext context,
-  ColorSeed colorSelected,
-  void Function(bool useLightMode) handleBrightnessChange,
-  void Function(int value) handleColorSelect,
+  ThemeMode themeMode,
+  void Function(ThemeMode?) handleThemeModeChange,
+  Buch buch,
+  void Function(Buch) handleBuchChange,
 ) {
   return !_isMediumScreen(context) && !_isLargeScreen(context)
       ? [
-          _BrightnessButton(
-            handleBrightnessChange: handleBrightnessChange,
+          _ThemeModeButton(
+            themeMode: themeMode,
+            handleThemeModeChange: () => handleThemeModeChange(null),
           ),
-          _ColorSeedButton(
-            handleColorSelect: handleColorSelect,
-            colorSelected: colorSelected,
+          _BuchButton(
+            buch: buch,
+            handleBuchChange: handleBuchChange,
           ),
         ]
       : [Container()];
 }
 
-class _BrightnessButton extends StatelessWidget {
-  const _BrightnessButton({
-    required this.handleBrightnessChange,
+class _ThemeModeButton extends StatelessWidget {
+  const _ThemeModeButton({
+    required this.handleThemeModeChange,
+    required this.themeMode,
     this.showTooltipBelow = true,
   });
 
-  final Function handleBrightnessChange;
+  final Function handleThemeModeChange;
+  final ThemeMode themeMode;
   final bool showTooltipBelow;
 
   @override
   Widget build(BuildContext context) {
-    final isBright = Theme.of(context).brightness == Brightness.light;
     return Tooltip(
       preferBelow: showTooltipBelow,
-      message: 'Hell/Dunkel',
+      message: 'Thema ändern',
       child: IconButton(
-        icon: isBright ? const Icon(Icons.dark_mode_outlined) : const Icon(Icons.light_mode_outlined),
-        onPressed: () => handleBrightnessChange(!isBright),
+        icon: themeMode == ThemeMode.light
+            ? const Icon(Icons.light_mode_outlined)
+            : themeMode == ThemeMode.dark
+                ? const Icon(Icons.dark_mode_outlined)
+                : const Icon(Icons.brightness_auto_outlined),
+        onPressed: () => handleThemeModeChange(),
       ),
     );
   }
 }
 
-class _ColorSeedButton extends StatelessWidget {
-  const _ColorSeedButton({
-    required this.handleColorSelect,
-    required this.colorSelected,
+class _BuchButton extends StatelessWidget {
+  const _BuchButton({
+    required this.buch,
+    required this.handleBuchChange,
   });
 
-  final void Function(int) handleColorSelect;
-  final ColorSeed colorSelected;
+  final Buch buch;
+  final Function handleBuchChange;
 
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
       icon: Icon(
-        Icons.palette_outlined,
+        Icons.menu_book,
         color: Theme.of(context).colorScheme.onSurfaceVariant,
       ),
-      tooltip: 'Farbe auswählen',
+      tooltip: 'Buch auswählen',
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       itemBuilder: (context) {
-        return List.generate(ColorSeed.values.length, (index) {
-          ColorSeed currentColor = ColorSeed.values[index];
-
+        return List.generate(4, (index) {
           return PopupMenuItem(
             value: index,
-            enabled: currentColor != colorSelected,
+            enabled: index != Buch.values.indexOf(buch),
             child: Wrap(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: Icon(
-                    currentColor == colorSelected ? Icons.color_lens : Icons.color_lens_outlined,
-                    color: currentColor.color,
-                  ),
+                const Padding(
+                  padding: EdgeInsets.only(left: 10),
+                  child: Icon(Icons.menu_book),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 20),
-                  child: Text(currentColor.localizedLabel()),
+                  child: Text(Buch.values[index].name()),
                 ),
               ],
             ),
           );
         });
       },
-      onSelected: handleColorSelect,
+      onSelected: (int index) => handleBuchChange(Buch.values[index]),
     );
   }
 }

@@ -9,18 +9,16 @@ import '../screens.dart';
 /// on the `routeState` that was parsed by the TemplateRouteParser.
 class HomeNavigator extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
-  final bool useLightMode;
-  final ColorSeed colorSelected;
-  final void Function(bool) handleBrightnessChange;
-  final void Function(int) handleColorSelect;
+  final ThemeMode themeMode;
+  final void Function(ThemeMode?) handleThemeModeChange;
+  final void Function(Buch) handleBuchChange;
 
   const HomeNavigator({
     super.key,
     required this.navigatorKey,
-    required this.useLightMode,
-    required this.colorSelected,
-    required this.handleBrightnessChange,
-    required this.handleColorSelect,
+    required this.themeMode,
+    required this.handleThemeModeChange,
+    required this.handleBuchChange,
   });
 
   @override
@@ -58,10 +56,9 @@ class _HomeNavigatorState extends State<HomeNavigator> {
           FadeTransitionPage<void>(
             key: _scaffoldKey,
             child: HomeScaffold(
-              useLightMode: widget.useLightMode,
-              colorSelected: widget.colorSelected,
-              handleBrightnessChange: widget.handleBrightnessChange,
-              handleColorSelect: widget.handleColorSelect,
+              themeMode: widget.themeMode,
+              handleThemeModeChange: widget.handleThemeModeChange,
+              handleBuchChange: widget.handleBuchChange,
             ),
           ),
           // Add an additional page to the stack if the user is viewing an app or media

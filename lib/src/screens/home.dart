@@ -8,21 +8,19 @@ import 'home_body.dart';
 class HomeScaffold extends StatelessWidget {
   const HomeScaffold({
     super.key,
-    required this.useLightMode,
-    required this.colorSelected,
-    required this.handleBrightnessChange,
-    required this.handleColorSelect,
+    required this.themeMode,
+    required this.handleThemeModeChange,
+    required this.handleBuchChange,
   });
 
-  final bool useLightMode;
-  final ColorSeed colorSelected;
-  final void Function(bool useLightMode) handleBrightnessChange;
-  final void Function(int value) handleColorSelect;
+  final ThemeMode themeMode;
+  final void Function(ThemeMode?) handleThemeModeChange;
+  final void Function(Buch) handleBuchChange;
 
   @override
   Widget build(BuildContext context) {
     final routeState = RouteStateScope.of(context);
-    final buch = buchFromRoute(routeState.route.pathTemplate);
+    final buch = buchFromRoute(routeState.route.path);
     final selectedIndex = _getSelectedIndex(routeState.route.pathTemplate);
 
     return Scaffold(
@@ -31,9 +29,10 @@ class HomeScaffold extends StatelessWidget {
           title: Text('NAK Buch Lite - ${buch.name()}'),
           actions: appBarActions(
             context,
-            colorSelected,
-            handleBrightnessChange,
-            handleColorSelect,
+            themeMode,
+            handleThemeModeChange,
+            buch,
+            handleBuchChange,
           )),
       body: AdaptiveNavigationScaffold(
         selectedIndex: selectedIndex,
@@ -64,24 +63,17 @@ class HomeScaffold extends StatelessWidget {
           ),
         ],
         trailing: NavigationTrailing(
-          useLightMode: useLightMode,
-          colorSelected: colorSelected,
-          handleBrightnessChange: handleBrightnessChange,
-          handleColorSelect: handleColorSelect,
+          themeMode: themeMode,
+          handleThemeModeChange: handleThemeModeChange,
+          buch: buch,
+          handleBuchChange: handleBuchChange,
         ),
       ),
     );
   }
 
-  Buch _getBuch(String pathTemplate) {
-    if (pathTemplate.startsWith(Buch.chorbuch.route())) return Buch.chorbuch;
-    if (pathTemplate.startsWith(Buch.jugendliederbuch.route())) return Buch.jugendliederbuch;
-    if (pathTemplate.startsWith(Buch.jbergaenzungsheft.route())) return Buch.jbergaenzungsheft;
-    return Buch.gesangbuch;
-  }
-
   int _getSelectedIndex(String pathTemplate) {
-    var buch = _getBuch(pathTemplate);
+    var buch = buchFromRoute(pathTemplate);
     if (pathTemplate.startsWith('${buch.route()}/liste')) return 1;
     if (pathTemplate.startsWith('${buch.route()}/daten')) return 2;
     return 0;

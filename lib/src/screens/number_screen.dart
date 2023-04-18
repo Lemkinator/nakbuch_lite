@@ -31,6 +31,7 @@ class _NumberScreenState extends State<NumberScreen> {
   late Future<List<Lied>> _lieder;
 
   void _startTimer() {
+    inputOngoing = true;
     _stopTimer();
     _timer = Timer(const Duration(seconds: 3), () {
       inputOngoing = false;
@@ -65,7 +66,6 @@ class _NumberScreenState extends State<NumberScreen> {
     setState(() {
       if (!inputOngoing) {
         _enteredNumber = "";
-        inputOngoing = true;
       }
       _enteredNumber += number;
       _numberAndTitle = _enteredNumber;
@@ -117,6 +117,10 @@ class _NumberScreenState extends State<NumberScreen> {
     _routeState = RouteStateScope.of(context);
     buch = buchFromRoute(_routeState.route.path);
     _lieder = getLieder(buch, _prefs);
+    _prefs.then((SharedPreferences prefs) {
+      _enteredNumber = prefs.getString('number') ?? "";
+      _refreshView();
+    });
 
     return ScreenLayout(childs: <Widget>[
       h2(themeData, _numberAndTitle),

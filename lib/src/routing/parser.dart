@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data.dart';
 import 'parsed_route.dart';
@@ -49,68 +49,58 @@ class TemplateRouteParser extends RouteInformationParser<ParsedRoute> {
     }
 
     if (parsedRoute.path == '/') {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      Buch? buch;
-      if (prefs.getString('buch') == Buch.chorbuch.name()) {
-        buch = Buch.chorbuch;
-      } else if (prefs.getString('buch') == Buch.jugendliederbuch.name()) {
-        buch = Buch.jugendliederbuch;
-      } else if (prefs.getString('buch') == Buch.jbergaenzungsheft.name()) {
-        buch = Buch.jbergaenzungsheft;
-      } else {
-        buch = Buch.gesangbuch;
-      }
-      parsedRoute = ParsedRoute(
-          buch.route(),
-          buch.route(),
-          parsedRoute.parameters,
-          parsedRoute.queryParameters);
+      Buch buch = Buch.current();
+      parsedRoute = ParsedRoute(buch.route(), buch.route(), parsedRoute.parameters, parsedRoute.queryParameters);
     }
-    // Redirect shortcuts
-    else if (parsedRoute.pathTemplate == '/gb/:liedId' ||
-        parsedRoute.pathTemplate == '/cb/:liedId' ||
-        parsedRoute.pathTemplate == '/jb/:liedId' ||
-        parsedRoute.pathTemplate == '/jbe/:liedId') {
-      parsedRoute = ParsedRoute(
-          parsedRoute.path
-              .replaceFirst('/gb/', '/gesangbuch/lied/')
-              .replaceFirst('/cb/', '/chorbuch/lied/')
-              .replaceFirst('/jb/', '/jugendliederbuch/lied/')
-              .replaceFirst('/jbe/', '/jbergaenzungsheft/lied/'),
-          parsedRoute.pathTemplate
-              .replaceFirst('/gb/', '/gesangbuch/lied/')
-              .replaceFirst('/cb/', '/chorbuch/lied/')
-              .replaceFirst('/jb/', '/jugendliederbuch/lied/')
-              .replaceFirst('/jbe/', '/jbergaenzungsheft/lied/'),
-          parsedRoute.parameters,
-          parsedRoute.queryParameters);
+    switch (parsedRoute.pathTemplate) {
+      case '/':
+        Buch buch = Buch.current();
+        parsedRoute = ParsedRoute(buch.route(), buch.route(), parsedRoute.parameters, parsedRoute.queryParameters);
+        break;
+      case '/gb/:liedId':
+      case '/cb/:liedId':
+      case '/jb/:liedId':
+      case '/jbe/:liedId':
+        parsedRoute = ParsedRoute(
+            parsedRoute.path
+                .replaceFirst('/gb/', '/gesangbuch/lied/')
+                .replaceFirst('/cb/', '/chorbuch/lied/')
+                .replaceFirst('/jb/', '/jugendliederbuch/lied/')
+                .replaceFirst('/jbe/', '/jbergaenzungsheft/lied/'),
+            parsedRoute.pathTemplate
+                .replaceFirst('/gb/', '/gesangbuch/lied/')
+                .replaceFirst('/cb/', '/chorbuch/lied/')
+                .replaceFirst('/jb/', '/jugendliederbuch/lied/')
+                .replaceFirst('/jbe/', '/jbergaenzungsheft/lied/'),
+            parsedRoute.parameters,
+            parsedRoute.queryParameters);
+        break;
+      case '/gb':
+      case '/gb/daten':
+      case '/gb/liste':
+        parsedRoute = ParsedRoute(parsedRoute.path.replaceFirst('/gb', '/gesangbuch'),
+            parsedRoute.pathTemplate.replaceFirst('/gb', '/gesangbuch'), parsedRoute.parameters, parsedRoute.queryParameters);
+        break;
+      case '/cb':
+      case '/cb/daten':
+      case '/cb/liste':
+        parsedRoute = ParsedRoute(parsedRoute.path.replaceFirst('/cb', '/chorbuch'),
+            parsedRoute.pathTemplate.replaceFirst('/cb', '/chorbuch'), parsedRoute.parameters, parsedRoute.queryParameters);
+        break;
+      case '/jb':
+      case '/jb/daten':
+      case '/jb/liste':
+        parsedRoute = ParsedRoute(parsedRoute.path.replaceFirst('/jb', '/jugendliederbuch'),
+            parsedRoute.pathTemplate.replaceFirst('/jb', '/jugendliederbuch'), parsedRoute.parameters, parsedRoute.queryParameters);
+        break;
+      case '/jbe':
+      case '/jbe/daten':
+      case '/jbe/liste':
+        parsedRoute = ParsedRoute(parsedRoute.path.replaceFirst('/jbe', '/jbergaenzungsheft'),
+            parsedRoute.pathTemplate.replaceFirst('/jbe', '/jbergaenzungsheft'), parsedRoute.parameters, parsedRoute.queryParameters);
+        break;
     }
-    else if (parsedRoute.pathTemplate == '/gb' ||
-        parsedRoute.pathTemplate == '/cb' ||
-        parsedRoute.pathTemplate == '/jb' ||
-        parsedRoute.pathTemplate == '/jbe' ||
-        parsedRoute.pathTemplate == '/gb/daten' ||
-        parsedRoute.pathTemplate == '/cb/daten' ||
-        parsedRoute.pathTemplate == '/jb/daten' ||
-        parsedRoute.pathTemplate == '/jbe/daten' ||
-        parsedRoute.pathTemplate == '/gb/liste' ||
-        parsedRoute.pathTemplate == '/cb/liste' ||
-        parsedRoute.pathTemplate == '/jb/liste' ||
-        parsedRoute.pathTemplate == '/jbe/liste') {
-      parsedRoute = ParsedRoute(
-          parsedRoute.path
-              .replaceFirst('/gb', '/gesangbuch')
-              .replaceFirst('/cb', '/chorbuch')
-              .replaceFirst('/jb', '/jugendliederbuch')
-              .replaceFirst('/jbe', '/jbergaenzungsheft'),
-          parsedRoute.pathTemplate
-              .replaceFirst('/gb', '/gesangbuch')
-              .replaceFirst('/cb', '/chorbuch')
-              .replaceFirst('/jb', '/jugendliederbuch')
-              .replaceFirst('/jbe', '/jbergaenzungsheft'),
-          parsedRoute.parameters,
-          parsedRoute.queryParameters);
-    }
+    GetStorage().write('buch', parsedRoute.pathTemplate.split('/')[1]);
 
     // Redirect if a guard is present
     var guard = this.guard;

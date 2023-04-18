@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'data.dart';
 import 'routing.dart';
@@ -19,11 +19,8 @@ class _HomeState extends State<Home> {
   late final SimpleRouterDelegate _routerDelegate;
   late final TemplateRouteParser _routeParser;
 
-
   bool useMaterial3 = true;
   ThemeMode themeMode = ThemeMode.system;
-
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   void handleThemeModeChange(ThemeMode? newThemeMode) {
     setState(() {
@@ -38,15 +35,7 @@ class _HomeState extends State<Home> {
           themeMode = ThemeMode.system;
         }
       }
-      _prefs.then((SharedPreferences prefs) {
-        if (themeMode == ThemeMode.system) {
-          prefs.setString('themeMode', 'system');
-        } else if (themeMode == ThemeMode.dark) {
-          prefs.setString('themeMode', 'dark');
-        } else {
-          prefs.setString('themeMode', 'light');
-        }
-      });
+      GetStorage().write('themeMode', themeMode.toString());
     });
   }
 
@@ -55,13 +44,21 @@ class _HomeState extends State<Home> {
     var relativeRouteIndex = path.indexOf('/', 1);
     var relativeRoute = relativeRouteIndex == -1 ? '' : path.substring(relativeRouteIndex);
     _routeState.go('${buch.route()}$relativeRoute');
-    _prefs.then((SharedPreferences prefs) {
-      prefs.setString('buch', buch.name());
-    });
   }
 
   @override
   void initState() {
+    var storedThemeMode = GetStorage().read('themeMode');
+    if (storedThemeMode != null) {
+      if (storedThemeMode == 'ThemeMode.dark') {
+        themeMode = ThemeMode.dark;
+      } else if (storedThemeMode == 'ThemeMode.light') {
+        themeMode = ThemeMode.light;
+      } else {
+        themeMode = ThemeMode.system;
+      }
+    }
+
     /// Configure the parser with all of the app's allowed path templates.
     _routeParser = TemplateRouteParser(
       allowedPaths: [
@@ -107,22 +104,6 @@ class _HomeState extends State<Home> {
         handleBuchChange: handleBuchChange,
       ),
     );
-
-    _prefs.then((SharedPreferences prefs) {
-      return prefs.getString('themeMode') ?? 'system';
-    }).then((String? themeModeString) {
-      if (themeModeString == 'system') {
-        return ThemeMode.system;
-      } else if (themeModeString == 'dark') {
-        return ThemeMode.dark;
-      } else {
-        return ThemeMode.light;
-      }
-    }).then((ThemeMode themeMode) {
-      setState(() {
-        this.themeMode = themeMode;
-      });
-    });
 
     super.initState();
   }

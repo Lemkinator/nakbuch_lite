@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data.dart';
 import '../widgets.dart';
@@ -17,8 +16,7 @@ class LiedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
-    final Future<Lied> lied = getLied(buch, nummer, prefs);
+    final Future<Lied> lied = getLied(buch, nummer);
 
     return FutureBuilder<Lied?>(
       future: lied,

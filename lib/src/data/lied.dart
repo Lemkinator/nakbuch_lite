@@ -1,7 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_storage/get_storage.dart';
 
 import '../data.dart';
 
@@ -23,10 +22,9 @@ class Lied {
   String numberAndTitle() => '$number. $title';
 }
 
-Future<List<Lied>> getLieder(Buch buch, Future<SharedPreferences> futurePrefs) async {
-  var prefs = await futurePrefs;
-  var jsonString = prefs.getString('${buch.name()}_lieder');
-  jsonString ??= await rootBundle.loadString(buch.assetFileName());
+List<Lied> getLieder(Buch buch) {
+  var jsonString = GetStorage().read('custom_${buch.name()}_lieder');
+  jsonString ??= GetStorage().read('${buch.name()}_lieder');
   return jsonDecode(jsonString)
       .map<Lied>((json) => Lied(
             number: json['hymnNr'],
@@ -38,8 +36,8 @@ Future<List<Lied>> getLieder(Buch buch, Future<SharedPreferences> futurePrefs) a
       .toList();
 }
 
-Future<Lied> getLied(Buch buch, int number, Future<SharedPreferences> futurePrefs) async {
-  var lieder = await getLieder(buch, futurePrefs);
+Future<Lied> getLied(Buch buch, int number) async {
+  var lieder = getLieder(buch);
   if (number > 0 && number <= lieder.length) {
     return lieder[number - 1];
   } else {

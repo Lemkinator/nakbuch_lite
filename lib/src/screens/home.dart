@@ -20,13 +20,13 @@ class HomeScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routeState = RouteStateScope.of(context);
-    final buch = buchFromRoute(routeState.route.path);
+    final buch = Buch.current();
     final selectedIndex = _getSelectedIndex(routeState.route.pathTemplate);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          title: Text('NAK Buch Lite - ${buch.name()}'),
+          title: Text('${buch.name()} - NAK Buch Lite'),
           actions: appBarActions(
             context,
             themeMode,
@@ -73,7 +73,7 @@ class HomeScaffold extends StatelessWidget {
   }
 
   int _getSelectedIndex(String pathTemplate) {
-    var buch = buchFromRoute(pathTemplate);
+    var buch = Buch.current();
     if (pathTemplate.startsWith('${buch.route()}/liste')) return 1;
     if (pathTemplate.startsWith('${buch.route()}/daten')) return 2;
     return 0;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home.dart';
-import '../data/constants.dart';
+import '../data.dart';
 import '../routing.dart';
 import '../widgets/fade_transition_page.dart';
 import '../screens.dart';
@@ -32,7 +32,7 @@ class _HomeNavigatorState extends State<HomeNavigator> {
   Widget build(BuildContext context) {
     final routeState = RouteStateScope.of(context);
     final pathTemplate = routeState.route.pathTemplate;
-    final buch = buchFromRoute(pathTemplate);
+    final buch = Buch.current();
 
     int? lied;
     if (pathTemplate == '${buch.route()}/lied/:liedId') {

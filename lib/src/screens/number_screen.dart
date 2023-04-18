@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nakbuch_lite/src/data.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_storage/get_storage.dart';
 import 'dart:async';
 
+import '../data.dart';
 import '../routing.dart';
 import '../widgets.dart';
 
@@ -19,16 +19,16 @@ class NumberScreen extends StatefulWidget {
 }
 
 class _NumberScreenState extends State<NumberScreen> {
-  String _enteredNumber = "";
+  String _enteredNumber = GetStorage().read('number') ?? "";
   String _numberAndTitle = "";
   String _text = "";
   Timer? _timer;
   bool inputOngoing = false;
+  Function? disposeListen;
 
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late RouteState _routeState;
-  late Buch buch;
-  late Future<List<Lied>> _lieder;
+  final Buch buch = Buch.current();
+  List<Lied> _lieder = getLieder(Buch.current());
 
   void _startTimer() {
     inputOngoing = true;
@@ -45,21 +45,17 @@ class _NumberScreenState extends State<NumberScreen> {
   }
 
   void _refreshView() {
-    _lieder.then((List<Lied> lieder) {
-      var number = int.tryParse(_enteredNumber);
-      if (number != null && number > 0 && number <= lieder.length) {
-        var index = number - 1;
-        _numberAndTitle = lieder[index].numberAndTitle();
-        _text = lieder[index].text;
-      } else {
-        _enteredNumber = "";
-        _numberAndTitle = "";
-        _text = "";
-      }
-      _prefs.then((SharedPreferences prefs) {
-        prefs.setString('number', _enteredNumber);
-      });
-    });
+    var number = int.tryParse(_enteredNumber);
+    if (number != null && number > 0 && number <= _lieder.length) {
+      var index = number - 1;
+      _numberAndTitle = _lieder[index].numberAndTitle();
+      _text = _lieder[index].text;
+    } else {
+      _enteredNumber = "";
+      _numberAndTitle = "";
+      _text = "";
+    }
+    GetStorage().write('number', _enteredNumber);
   }
 
   void _onNumberButtonPressed(String number) {
@@ -84,22 +80,23 @@ class _NumberScreenState extends State<NumberScreen> {
   }
 
   void _onOkButtonPressed() {
-    _lieder.then((List<Lied> lieder) {
       var number = int.tryParse(_enteredNumber);
-      if (number != null && number > 0 && number <= lieder.length) {
+      if (number != null && number > 0 && number <= _lieder.length) {
         _routeState.go('${buch.route()}/lied/$number');
       } else {
         _enteredNumber = "";
         _numberAndTitle = "";
         _text = "";
       }
-    });
   }
 
   @override
   void initState() {
-    _prefs.then((SharedPreferences prefs) {
-      _enteredNumber = prefs.getString('number') ?? "";
+    _enteredNumber = GetStorage().read('number') ?? "";
+    _refreshView();
+
+    disposeListen = GetStorage().listenKey('buch', (value) {
+      _lieder = getLieder(Buch.current());
       _refreshView();
     });
     super.initState();
@@ -108,6 +105,7 @@ class _NumberScreenState extends State<NumberScreen> {
   @override
   void dispose() {
     _stopTimer();
+    disposeListen?.call();
     super.dispose();
   }
 
@@ -115,12 +113,6 @@ class _NumberScreenState extends State<NumberScreen> {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     _routeState = RouteStateScope.of(context);
-    buch = buchFromRoute(_routeState.route.path);
-    _lieder = getLieder(buch, _prefs);
-    _prefs.then((SharedPreferences prefs) {
-      _enteredNumber = prefs.getString('number') ?? "";
-      _refreshView();
-    });
 
     return ScreenLayout(childs: <Widget>[
       h2(themeData, _numberAndTitle),

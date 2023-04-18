@@ -16,7 +16,7 @@ class HomeScaffoldBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var currentRoute = RouteStateScope.of(context).route;
-    var buch = buchFromRoute(currentRoute.path);
+    var buch = Buch.current();
     var liedId = currentRoute.parameters['liedId'];
     var lied = int.tryParse(liedId ?? '');
 

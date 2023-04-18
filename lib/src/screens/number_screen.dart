@@ -116,7 +116,7 @@ class _NumberScreenState extends State<NumberScreen> {
     final themeData = Theme.of(context);
     _routeState = RouteStateScope.of(context);
     buch = buchFromRoute(_routeState.route.path);
-    _lieder = getLieder(buch, _prefs, DefaultAssetBundle.of(context));
+    _lieder = getLieder(buch, _prefs);
 
     return ScreenLayout(childs: <Widget>[
       h2(themeData, _numberAndTitle),

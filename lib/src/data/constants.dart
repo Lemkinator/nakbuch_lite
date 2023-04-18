@@ -31,13 +31,13 @@ enum Buch {
   String assetFileName() {
     switch (this) {
       case Buch.gesangbuch:
-        return 'hymnsGesangbuchNoCopyright.json';
+        return 'assets/hymnsGesangbuchNoCopyright.json';
       case Buch.chorbuch:
-        return 'hymnsChorbuchNoCopyright.json';
+        return 'assets/hymnsChorbuchNoCopyright.json';
       case Buch.jugendliederbuch:
-        return 'hymnsJugendliederbuchNoCopyright.json';
+        return 'assets/hymnsJugendliederbuchNoCopyright.json';
       case Buch.jbergaenzungsheft:
-        return 'hymnsJBErgaenzungsheftNoCopyright.json';
+        return 'assets/hymnsJBErgaenzungsheftNoCopyright.json';
     }
   }
 

@@ -18,7 +18,7 @@ class LiedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
-    final Future<Lied> lied = getLied(buch, nummer, prefs, DefaultAssetBundle.of(context));
+    final Future<Lied> lied = getLied(buch, nummer, prefs);
 
     return FutureBuilder<Lied?>(
       future: lied,

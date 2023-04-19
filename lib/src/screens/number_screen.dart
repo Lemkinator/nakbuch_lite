@@ -14,16 +14,16 @@ class NumberScreen extends StatefulWidget {
 }
 
 class _NumberScreenState extends State<NumberScreen> {
-  String _enteredNumber = "";
-  String _numberAndTitle = "";
-  String _text = "";
+  String _enteredNumber = '';
+  String _numberAndTitle = '';
+  String _text = '';
   Timer? _timer;
   bool inputOngoing = false;
   Function? disposeListen;
 
   late RouteState _routeState;
   final Buch buch = Buch.current();
-  List<Lied> _lieder = getLieder(Buch.current());
+  List<Lied> _lieder = getLieder();
 
   void _startTimer() {
     inputOngoing = true;
@@ -46,9 +46,9 @@ class _NumberScreenState extends State<NumberScreen> {
       _numberAndTitle = _lieder[index].numberAndTitle();
       _text = _lieder[index].text;
     } else {
-      _enteredNumber = "";
-      _numberAndTitle = "";
-      _text = "";
+      _enteredNumber = '';
+      _numberAndTitle = '';
+      _text = '';
     }
     GetStorage().write('number', _enteredNumber);
   }
@@ -56,7 +56,7 @@ class _NumberScreenState extends State<NumberScreen> {
   void _onNumberButtonPressed(String number) {
     setState(() {
       if (!inputOngoing) {
-        _enteredNumber = "";
+        _enteredNumber = ' ';
       }
       _enteredNumber += number;
       _numberAndTitle = _enteredNumber;
@@ -79,19 +79,19 @@ class _NumberScreenState extends State<NumberScreen> {
     if (number != null && number > 0 && number <= _lieder.length) {
       _routeState.go('${buch.route()}/lied/$number');
     } else {
-      _enteredNumber = "";
-      _numberAndTitle = "";
-      _text = "";
+      _enteredNumber = '';
+      _numberAndTitle = '';
+      _text = '';
     }
   }
 
   @override
   void initState() {
-    _enteredNumber = GetStorage().read('number') ?? "";
+    _enteredNumber = GetStorage().read('number') ?? '';
     _refreshView();
 
     disposeListen = GetStorage().listenKey('buch', (value) {
-      _lieder = getLieder(Buch.current());
+      _lieder = getLieder();
       _refreshView();
     });
     super.initState();
@@ -117,29 +117,29 @@ class _NumberScreenState extends State<NumberScreen> {
           children: [
             Row(
               children: [
-                _buildNumberButton("1"),
-                _buildNumberButton("2"),
-                _buildNumberButton("3"),
+                _buildNumberButton('1'),
+                _buildNumberButton('2'),
+                _buildNumberButton('3'),
               ],
             ),
             Row(
               children: [
-                _buildNumberButton("4"),
-                _buildNumberButton("5"),
-                _buildNumberButton("6"),
+                _buildNumberButton('4'),
+                _buildNumberButton('5'),
+                _buildNumberButton('6'),
               ],
             ),
             Row(
               children: [
-                _buildNumberButton("7"),
-                _buildNumberButton("8"),
-                _buildNumberButton("9"),
+                _buildNumberButton('7'),
+                _buildNumberButton('8'),
+                _buildNumberButton('9'),
               ],
             ),
             Row(
               children: [
                 _buildDeleteButton(),
-                _buildNumberButton("0"),
+                _buildNumberButton('0'),
                 _buildOkButton(),
               ],
             ),

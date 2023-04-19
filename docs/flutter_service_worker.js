@@ -12,7 +12,7 @@ const RESOURCES = {
 "assets/assets/images/NAK_Buch_squircle.png": "e86f2fc79e379b5897e963c7cbb7ef72",
 "assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
 "assets/fonts/MaterialIcons-Regular.otf": "e7069dfd19b331be16bed984668fe080",
-"assets/NOTICES": "2f389952d99a37b338408a2cbe936377",
+"assets/NOTICES": "8998f128fb52da1def7980a1cb95a2e9",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "6d342eb68f170c97609e9da345464e5e",
 "canvaskit/canvaskit.js": "97937cb4c2c2073c968525a3e08c86a3",
 "canvaskit/canvaskit.wasm": "3de12d898ec208a5f31362cc00f09b9e",
@@ -25,9 +25,9 @@ const RESOURCES = {
 "icons/Icon-512.png": "e86f2fc79e379b5897e963c7cbb7ef72",
 "icons/Icon-maskable-192.png": "e86f2fc79e379b5897e963c7cbb7ef72",
 "icons/Icon-maskable-512.png": "e86f2fc79e379b5897e963c7cbb7ef72",
-"index.html": "89a6331bc79592731b5fcfef742406de",
-"/": "89a6331bc79592731b5fcfef742406de",
-"main.dart.js": "75e5ed14b94bd8e542ddeabd6dc73af4",
+"index.html": "74c5ee8cebc4e4d8e27c34034dd3cc06",
+"/": "74c5ee8cebc4e4d8e27c34034dd3cc06",
+"main.dart.js": "19c3559e02dab2da52155283c3dd4133",
 "manifest.json": "d2387b59e4eed2504a96c390a1497d8a",
 "version.json": "83b5dfb029802cfcdc107f16edc050f4"
 };

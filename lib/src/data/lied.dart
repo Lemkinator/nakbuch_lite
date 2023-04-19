@@ -22,10 +22,11 @@ class Lied {
   String numberAndTitle() => '$number. $title';
 }
 
-List<Lied> getLieder(Buch buch) {
-  var jsonString = GetStorage().read('custom_${buch.name()}_lieder');
-  jsonString ??= GetStorage().read('${buch.name()}_lieder');
-  return jsonDecode(jsonString)
+List<Lied> getLieder({Buch? buch}) {
+  buch??= Buch.current();
+  String? jsonString = GetStorage('custom_lieder').read(buch.path());
+  jsonString ??= GetStorage('lieder').read(buch.path());
+  return jsonDecode(jsonString!)
       .map<Lied>((json) => Lied(
             number: json['hymnNr'],
             rubric: json['hymnRubricIndex'],
@@ -36,8 +37,9 @@ List<Lied> getLieder(Buch buch) {
       .toList();
 }
 
-Future<Lied> getLied(Buch buch, int number) async {
-  var lieder = getLieder(buch);
+Future<Lied> getLied(Buch? buch, int number) async {
+  buch??= Buch.current();
+  var lieder = getLieder(buch: buch);
   if (number > 0 && number <= lieder.length) {
     return lieder[number - 1];
   } else {

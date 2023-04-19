@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:archive/archive.dart';
 import 'package:confetti/confetti.dart';
 import 'package:file_picker/_internal/file_picker_web.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -36,7 +38,7 @@ class _InfoScreenState extends State<InfoScreen> {
             Center(
               child: ElevatedButton(
                 onPressed: _versionPressed,
-                child: const Text("Version: 1.0.0"),
+                child: const Text('Version: 1.0.0'),
               ),
             ),
             smallSpace(),
@@ -45,7 +47,7 @@ class _InfoScreenState extends State<InfoScreen> {
                 onPressed: () {
                   launchUrl(Uri.parse('https://github.com/Lemkinator/nakbuch_lite'));
                 },
-                child: const Text("Source Code"),
+                child: const Text('Source Code'),
               ),
             ),
             smallSpace(),
@@ -54,27 +56,27 @@ class _InfoScreenState extends State<InfoScreen> {
                 onPressed: () {
                   launchUrl(Uri.parse('https://www.leonard-lemke.com'));
                 },
-                child: const Text("Über mich"),
+                child: const Text('Über mich'),
               ),
             ),
             largeSpace(),
-            h2(themeData, "Hilfe"),
+            h2(themeData, 'Hilfe'),
             smallSpace(),
             p(themeData,
-                "Diese App steht in keiner Verbindung zur Neuapostolischen Kirche oder der Verlag Friedrich Bischoff GmbH und beinhaltet lediglich die urheberrechtsfreien Texte aus dem folgenden Büchern:"),
+                'Diese App steht in keiner Verbindung zur Neuapostolischen Kirche oder der Verlag Friedrich Bischoff GmbH und beinhaltet lediglich die urheberrechtsfreien Texte aus dem folgenden Büchern:'),
             smallSpace(),
-            li(themeData, "Gesangbuch (320 von 438 Liedern)"),
-            li(themeData, "Chorbuch (206 von 462 Liedern)"),
-            li(themeData, "Jugendliederbuch (41 von 102 Liedern)"),
-            li(themeData, "Ergänzungsheft zum Jugendliederbuch (3 von 20 Liedern)"),
+            li(themeData, 'Gesangbuch (320 von 438 Liedern)'),
+            li(themeData, 'Chorbuch (206 von 462 Liedern)'),
+            li(themeData, 'Jugendliederbuch (41 von 102 Liedern)'),
+            li(themeData, 'Ergänzungsheft zum Jugendliederbuch (3 von 20 Liedern)'),
             mediumSpace(),
             p(themeData,
-                "Bei den restlichen Liedern liegen die Rechte noch bei den Urhebern, weshalb diese nicht oder nur teilweise angezeigt werden können."),
+                'Bei den restlichen Liedern liegen die Rechte noch bei den Urhebern, weshalb diese nicht oder nur teilweise angezeigt werden können.'),
             p(themeData,
-                "Die Informationen zum Urheberrecht wurden mit großer Sorgfalt geprüft, wenn mir hierbei unwissend Fehler unterlaufen sind, bitte ich freundlichst um einen Hinweis, dem ich unverzüglich nachgehen werde."),
+                'Die Informationen zum Urheberrecht wurden mit großer Sorgfalt geprüft, wenn mir hierbei unwissend Fehler unterlaufen sind, bitte ich freundlichst um einen Hinweis, dem ich unverzüglich nachgehen werde.'),
             mediumSpace(),
             p(themeData,
-                "Die Verwaltung der Rechte obliegt u.a. der Verlag Friedrich Bischoff GmbH, welche selbst eine (kostenpflichtige) App für das Gesangbuch und eine (kostenpflichtige) App für das Chorbuch herausgegeben hat."),
+                'Die Verwaltung der Rechte obliegt u.a. der Verlag Friedrich Bischoff GmbH, welche selbst eine (kostenpflichtige) App für das Gesangbuch und eine (kostenpflichtige) App für das Chorbuch herausgegeben hat.'),
             largeSpace(),
           ],
         ),
@@ -110,30 +112,52 @@ class _InfoScreenState extends State<InfoScreen> {
     });
 
     timer?.cancel();
-    timer = Timer(const Duration(seconds: 1), () {
-      setState(() {
-        versionPressedCounter = 0;
-      });
-    });
-
+    timer = Timer(
+        const Duration(seconds: 1),
+        () => setState(() {
+              versionPressedCounter = 0;
+            }));
     if (versionPressedCounter >= 10) {
       setState(() {
         versionPressedCounter = 0;
       });
-      print("confetti");
       _controllerCenter.play();
       //when the controller stops, open the file picker
-      _controllerCenter.addListener(() {
-        if (_controllerCenter.state == ConfettiControllerState.stopped) {
-          _controllerCenter.removeListener(() {});
-          _openFilePicker();
-        }
-      });
+      Timer(const Duration(seconds: 2), () => _openDialog(context));
     }
   }
 
+  _openDialog(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Custom Text'),
+        //content: const Text(''),
+        actions: <Widget>[
+          FilledButton(
+            child: const Text('Hinzufügen'),
+            onPressed: () {
+              _openFilePicker();
+              Navigator.of(context).pop();
+            },
+          ),
+          ElevatedButton(
+            child: const Text('Löschen'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              GetStorage('custom_lieder').erase();
+            },
+          ),
+          TextButton(
+            child: const Text('Abbrechen'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+
   _openFilePicker() async {
-    print("Picker: ");
     FilePicker filePicker = kIsWeb ? FilePickerWeb.platform : FilePicker.platform;
     var result = await filePicker.pickFiles(
       allowMultiple: true,
@@ -141,24 +165,47 @@ class _InfoScreenState extends State<InfoScreen> {
       allowedExtensions: ['zip', 'json'],
     );
     if (result != null) {
-      Buch? buch;
       for (var file in result.files) {
-        if (file.name.startsWith("hymnsGesangbuch")) {
-          buch = Buch.gesangbuch;
-        } else if (file.name.startsWith("hymnsChorbuch")) {
-          buch = Buch.chorbuch;
-        } else if (file.name.startsWith("hymnsJugendliederbuch")) {
-          buch = Buch.jugendliederbuch;
-        } else if (file.name.startsWith("hymnsJBErgaenzungsheft")) {
-          buch = Buch.jbergaenzungsheft;
-        }
-        if (buch != null) {
-          var bytes = file.bytes;
-          var content = utf8.decode(bytes!);
+        if (file.extension == 'json') {
+          processJSON(file);
+        } else if (file.extension == 'zip') {
+          processZIP(file);
         }
       }
-    } else {
-      // User canceled the picker
+    }
+  }
+
+  processJSON(PlatformFile file) {
+    var content = utf8.decode(file.bytes!);
+    if (file.name.startsWith('hymnsGesangbuch')) {
+      GetStorage('custom_lieder').write(Buch.gesangbuch.path(), content);
+    } else if (file.name.startsWith('hymnsChorbuch')) {
+      GetStorage('custom_lieder').write(Buch.chorbuch.path(), content);
+    } else if (file.name.startsWith('hymnsJugendliederbuch')) {
+      GetStorage('custom_lieder').write(Buch.jugendliederbuch.path(), content);
+    } else if (file.name.startsWith('hymnsJBErgaenzungsheft')) {
+      GetStorage('custom_lieder').write(Buch.jbergaenzungsheft.path(), content);
+    }
+  }
+
+  processZIP(PlatformFile file) {
+    var bytes = file.bytes;
+    var zip = ZipDecoder().decodeBytes(bytes!);
+    for (var file in zip.files) {
+      file.content;
+      var filename = file.name;
+      if (filename.endsWith('.json')) {
+        var content = utf8.decode(file.content);
+        if (filename.startsWith('hymnsGesangbuch')) {
+          GetStorage('custom_lieder').write(Buch.gesangbuch.path(), content);
+        } else if (filename.startsWith('hymnsChorbuch')) {
+          GetStorage('custom_lieder').write(Buch.chorbuch.path(), content);
+        } else if (filename.startsWith('hymnsJugendliederbuch')) {
+          GetStorage('custom_lieder').write(Buch.jugendliederbuch.path(), content);
+        } else if (filename.startsWith('hymnsJBErgaenzungsheft')) {
+          GetStorage('custom_lieder').write(Buch.jbergaenzungsheft.path(), content);
+        }
+      }
     }
   }
 }

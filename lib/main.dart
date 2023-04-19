@@ -21,6 +21,10 @@ main() async {
   setHashUrlStrategy();
   // setPathUrlStrategy();
   await GetStorage.init();
+  await GetStorage.init('themeMode');
+  await GetStorage.init('buch');
+  await GetStorage.init('lieder');
+  await GetStorage.init('custom_lieder');
   await Buch.init();
   setupWindow();
   runApp(const Home());

@@ -77,7 +77,7 @@ enum Buch {
   static init() async {
     for (var buch in Buch.values) {
       String jsonString = await rootBundle.loadString(buch.assetFileName());
-      GetStorage().write('${buch.name()}_lieder', jsonString);
+      GetStorage('lieder').write(buch.path(), jsonString);
     }
   }
 }

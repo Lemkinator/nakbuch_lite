@@ -63,6 +63,7 @@ class _HomeState extends State<Home> {
     _routeParser = TemplateRouteParser(
       allowedPaths: [
         '/',
+        '/info',
         '/gesangbuch',
         '/chorbuch',
         '/jugendliederbuch',

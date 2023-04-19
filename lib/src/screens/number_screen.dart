@@ -7,19 +7,14 @@ import '../routing.dart';
 import '../widgets.dart';
 
 class NumberScreen extends StatefulWidget {
-  final int? number;
-
-  const NumberScreen({
-    super.key,
-    this.number,
-  });
+  const NumberScreen({super.key});
 
   @override
   State<NumberScreen> createState() => _NumberScreenState();
 }
 
 class _NumberScreenState extends State<NumberScreen> {
-  String _enteredNumber = GetStorage().read('number') ?? "";
+  String _enteredNumber = "";
   String _numberAndTitle = "";
   String _text = "";
   Timer? _timer;
@@ -80,14 +75,14 @@ class _NumberScreenState extends State<NumberScreen> {
   }
 
   void _onOkButtonPressed() {
-      var number = int.tryParse(_enteredNumber);
-      if (number != null && number > 0 && number <= _lieder.length) {
-        _routeState.go('${buch.route()}/lied/$number');
-      } else {
-        _enteredNumber = "";
-        _numberAndTitle = "";
-        _text = "";
-      }
+    var number = int.tryParse(_enteredNumber);
+    if (number != null && number > 0 && number <= _lieder.length) {
+      _routeState.go('${buch.route()}/lied/$number');
+    } else {
+      _enteredNumber = "";
+      _numberAndTitle = "";
+      _text = "";
+    }
   }
 
   @override

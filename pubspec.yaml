@@ -34,8 +34,10 @@ dependencies:
   adaptive_breakpoints: ^0.1.6
   adaptive_navigation: ^0.0.3
   collection: ^1.15.0
+  confetti: ^0.7.0
   cupertino_icons: ^1.0.2
   dynamic_color: ^1.6.3
+  file_picker: ^5.2.9
   get_storage: ^2.1.1
   path_to_regexp: ^0.4.0
   quiver: ^3.1.0

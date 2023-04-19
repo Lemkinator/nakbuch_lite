@@ -17,8 +17,6 @@ class HomeScaffoldBody extends StatelessWidget {
   Widget build(BuildContext context) {
     var currentRoute = RouteStateScope.of(context).route;
     var buch = Buch.current();
-    var liedId = currentRoute.parameters['liedId'];
-    var lied = int.tryParse(liedId ?? '');
 
     // A nested Router isn't necessary because the back button behavior doesn't
     // need to be customized.
@@ -41,10 +39,10 @@ class HomeScaffoldBody extends StatelessWidget {
             key: ValueKey('data'),
             child: DataScreen(),
           )
-        else if (liedId != null)
-          FadeTransitionPage<void>(
-            key: const ValueKey('number'),
-            child: NumberScreen(number: lied),
+        else if (currentRoute.pathTemplate == '/info')
+          const FadeTransitionPage<void>(
+            key: ValueKey('info'),
+            child: InfoScreen(),
           )
 
         // Avoid building a Navigator with an empty `pages` list when the RouteState is set to an unexpected path

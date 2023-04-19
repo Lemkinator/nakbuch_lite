@@ -22,7 +22,7 @@ class ScreenLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: title != null
+      appBar: title != null && backgroundImage == null
           ? AppBar(
               title: Text(title!),
             )

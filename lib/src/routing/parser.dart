@@ -76,26 +76,18 @@ class TemplateRouteParser extends RouteInformationParser<ParsedRoute> {
             parsedRoute.queryParameters);
         break;
       case '/gb':
-      case '/gb/daten':
-      case '/gb/liste':
         parsedRoute = ParsedRoute(parsedRoute.path.replaceFirst('/gb', '/gesangbuch'),
             parsedRoute.pathTemplate.replaceFirst('/gb', '/gesangbuch'), parsedRoute.parameters, parsedRoute.queryParameters);
         break;
       case '/cb':
-      case '/cb/daten':
-      case '/cb/liste':
         parsedRoute = ParsedRoute(parsedRoute.path.replaceFirst('/cb', '/chorbuch'),
             parsedRoute.pathTemplate.replaceFirst('/cb', '/chorbuch'), parsedRoute.parameters, parsedRoute.queryParameters);
         break;
       case '/jb':
-      case '/jb/daten':
-      case '/jb/liste':
         parsedRoute = ParsedRoute(parsedRoute.path.replaceFirst('/jb', '/jugendliederbuch'),
             parsedRoute.pathTemplate.replaceFirst('/jb', '/jugendliederbuch'), parsedRoute.parameters, parsedRoute.queryParameters);
         break;
       case '/jbe':
-      case '/jbe/daten':
-      case '/jbe/liste':
         parsedRoute = ParsedRoute(parsedRoute.path.replaceFirst('/jbe', '/jbergaenzungsheft'),
             parsedRoute.pathTemplate.replaceFirst('/jbe', '/jbergaenzungsheft'), parsedRoute.parameters, parsedRoute.queryParameters);
         break;

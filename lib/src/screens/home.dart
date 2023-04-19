@@ -41,6 +41,7 @@ class HomeScaffold extends StatelessWidget {
           if (idx == 0) routeState.go('${buch.route()}/');
           if (idx == 1) routeState.go('${buch.route()}/liste');
           if (idx == 2) routeState.go('${buch.route()}/daten');
+          if (idx == 3) routeState.go('/info');
         },
         destinations: const [
           NavigationDestination(
@@ -61,6 +62,12 @@ class HomeScaffold extends StatelessWidget {
             label: 'Daten',
             selectedIcon: Icon(Icons.data_usage_rounded),
           ),
+          NavigationDestination(
+            tooltip: '',
+            icon: Icon(Icons.info_outline),
+            label: 'Info',
+            selectedIcon: Icon(Icons.info_outline),
+          ),
         ],
         trailing: NavigationTrailing(
           themeMode: themeMode,
@@ -74,8 +81,9 @@ class HomeScaffold extends StatelessWidget {
 
   int _getSelectedIndex(String pathTemplate) {
     var buch = Buch.current();
-    if (pathTemplate.startsWith('${buch.route()}/liste')) return 1;
-    if (pathTemplate.startsWith('${buch.route()}/daten')) return 2;
+    if (pathTemplate == '${buch.route()}/liste') return 1;
+    if (pathTemplate == '${buch.route()}/daten') return 2;
+    if (pathTemplate == '/info') return 3;
     return 0;
   }
 }

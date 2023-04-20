@@ -22,7 +22,6 @@ class _NumberScreenState extends State<NumberScreen> {
   Function? disposeListen;
 
   late RouteState _routeState;
-  final Buch buch = Buch.current();
   List<Lied> _lieder = getLieder();
 
   void _startTimer() {
@@ -77,7 +76,7 @@ class _NumberScreenState extends State<NumberScreen> {
   void _onOkButtonPressed() {
     var number = int.tryParse(_enteredNumber);
     if (number != null && number > 0 && number <= _lieder.length) {
-      _routeState.go('${buch.route()}/lied/$number');
+      _routeState.go('${Buch.current().route()}/lied/$number');
     } else {
       _enteredNumber = '';
       _numberAndTitle = '';

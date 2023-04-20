@@ -20,10 +20,17 @@ class Lied {
   });
 
   String numberAndTitle() => '$number. $title';
+
+  static unknown(int number) => Lied(
+      number: number,
+      rubric: 0,
+      title: '??',
+      text: 'Das Lied mit der Nummer $number aus dem ${Buch.current().name()} kenne ich nicht :(',
+      copyright: '');
 }
 
-List<Lied> getLieder({Buch? buch}) {
-  buch??= Buch.current();
+List<Lied> getLieder() {
+  Buch buch = Buch.current();
   String? jsonString = GetStorage('custom_lieder').read(buch.path());
   jsonString ??= GetStorage('lieder').read(buch.path());
   return jsonDecode(jsonString!)
@@ -37,12 +44,11 @@ List<Lied> getLieder({Buch? buch}) {
       .toList();
 }
 
-Future<Lied> getLied(Buch? buch, int number) async {
-  buch??= Buch.current();
-  var lieder = getLieder(buch: buch);
+Future<Lied> getLied(int number) async {
+  var lieder = getLieder();
   if (number > 0 && number <= lieder.length) {
     return lieder[number - 1];
   } else {
-    return Lied(number: number, rubric: 0, title: '??', text: 'Das Lied mit der Nummer $number aus dem ${buch.name()} kenne ich nicht :(', copyright: '');
+    return Lied.unknown(number);
   }
 }

@@ -65,7 +65,6 @@ class _HomeNavigatorState extends State<HomeNavigator> {
           if (lied != null)
             MaterialPage<void>(
               child: LiedScreen(
-                buch: buch,
                 nummer: lied,
               ),
             ),

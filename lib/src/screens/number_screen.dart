@@ -110,7 +110,7 @@ class _NumberScreenState extends State<NumberScreen> {
 
     return ScreenLayout(childs: <Widget>[
       h2(themeData, _numberAndTitle),
-      const SizedBox(height: 10),
+      smallSpace(),
       SizedBox(
         child: Column(
           children: [
@@ -145,9 +145,9 @@ class _NumberScreenState extends State<NumberScreen> {
           ],
         ),
       ),
-      const SizedBox(height: 15),
+      mediumSpace(),
       p(themeData, _text),
-      const SizedBox(height: 40),
+      largeSpace(),
     ]);
   }
 

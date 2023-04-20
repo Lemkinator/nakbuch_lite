@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import '../data.dart';
@@ -6,37 +7,24 @@ import '../widgets.dart';
 class LiedScreen extends StatelessWidget {
   const LiedScreen({
     super.key,
-    required this.buch,
     required this.nummer,
   });
 
-  final Buch buch;
   final int nummer;
 
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final Future<Lied> lied = getLied(buch, nummer);
+    final List<Lied> lieder = getLieder();
+    final lied = lieder.elementAtOrNull(nummer - 1) ?? Lied.unknown(nummer);
 
-    return FutureBuilder<Lied?>(
-      future: lied,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return _buildLiedScreen(themeData, snapshot.data!);
-        } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
-        }
-        return const Center(child: CircularProgressIndicator());
-      },
-    );
-  }
-
-  Widget _buildLiedScreen(ThemeData themeData, Lied lied) {
-    return ScreenLayout(title: '${lied.numberAndTitle()} - ${buch.name()}', childs: <Widget>[
+    return ScreenLayout(title: Buch.current().name(), childs: <Widget>[
+      h3(themeData, lied.numberAndTitle()),
+      mediumSpace(),
       p(themeData, lied.text),
-      const SizedBox(height: 40),
+      largeSpace(),
       p(themeData, lied.copyright),
-      const SizedBox(height: 40),
+      largeSpace(),
     ]);
   }
 }

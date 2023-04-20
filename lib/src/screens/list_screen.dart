@@ -16,14 +16,15 @@ class ListScreen extends StatefulWidget {
 }
 
 class _ListScreenState extends State<ListScreen> {
+  late List<Lied> _lieder;
   Function? disposeListen;
-  List<Lied> _lieder = getLieder();
 
   @override
   void initState() {
+    _lieder = getLieder(Buch.current());
     disposeListen = GetStorage().listenKey('buch', (value) {
       setState(() {
-        _lieder = getLieder();
+        _lieder = getLieder(Buch.current());
       });
     });
     super.initState();
@@ -57,7 +58,7 @@ class _ListScreenState extends State<ListScreen> {
               width: 1000,
               child: InkWell(
                 onTap: () {
-                  RouteStateScope.of(context).go('${Buch.current().route()}/lied/${item.number}');
+                  RouteStateScope.of(context).go('${Buch.current().route()}/text/${item.number}');
                 },
                 borderRadius: BorderRadius.vertical(
                   top: Radius.circular(index == 0 ? 16 : 0),
@@ -65,7 +66,7 @@ class _ListScreenState extends State<ListScreen> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(10),
-                  child: Text('${item.number}. ${item.title}'),
+                  child: Text(item.numberAndTitle()),
                 ),
               ),
             ),
@@ -78,7 +79,7 @@ class _ListScreenState extends State<ListScreen> {
       removeItemBuilder: (context, animation, oldItem) {
         return FadeTransition(
           opacity: animation,
-          child: Text('${oldItem.number}. ${oldItem.title}'),
+          child: Text(oldItem.numberAndTitle()),
         );
       },
     );

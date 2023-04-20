@@ -14,15 +14,49 @@ class NumberScreen extends StatefulWidget {
 }
 
 class _NumberScreenState extends State<NumberScreen> {
-  String _enteredNumber = '';
+  late RouteState _routeState;
+  late List<Lied> _lieder;
+  String _input = '';
   String _numberAndTitle = '';
   String _text = '';
-  Timer? _timer;
   bool inputOngoing = false;
+  Timer? _timer;
   Function? disposeListen;
 
-  late RouteState _routeState;
-  List<Lied> _lieder = getLieder();
+  @override
+  void initState() {
+    _lieder = getLieder(Buch.current());
+    _input = GetStorage().read('lied') ?? '';
+    _refreshView();
+    disposeListen = GetStorage().listenKey('buch', (value) {
+      setState(() {
+        _lieder = getLieder(Buch.current());
+        _refreshView();
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _stopTimer();
+    disposeListen?.call();
+    super.dispose();
+  }
+
+  void _refreshView(){
+    setState(() {
+      final number = numberFromString(Buch.current(), _input);
+      if (number != null) {
+        _numberAndTitle = _lieder[number - 1].numberAndTitle();
+        _text = _lieder[number - 1].text;
+      } else {
+        _input = '';
+        _numberAndTitle = '';
+        _text = '';
+      }
+    });
+  }
 
   void _startTimer() {
     inputOngoing = true;
@@ -38,27 +72,12 @@ class _NumberScreenState extends State<NumberScreen> {
     }
   }
 
-  void _refreshView() {
-    var number = int.tryParse(_enteredNumber);
-    if (number != null && number > 0 && number <= _lieder.length) {
-      var index = number - 1;
-      _numberAndTitle = _lieder[index].numberAndTitle();
-      _text = _lieder[index].text;
-    } else {
-      _enteredNumber = '';
-      _numberAndTitle = '';
-      _text = '';
-    }
-    GetStorage().write('number', _enteredNumber);
-  }
-
   void _onNumberButtonPressed(String number) {
     setState(() {
-      if (!inputOngoing) {
-        _enteredNumber = ' ';
+      if (!inputOngoing || _input.length > 2) {
+        _input = '';
       }
-      _enteredNumber += number;
-      _numberAndTitle = _enteredNumber;
+      _input += number;
       _refreshView();
     });
     _startTimer();
@@ -66,41 +85,24 @@ class _NumberScreenState extends State<NumberScreen> {
 
   void _onDeleteButtonPressed() {
     setState(() {
-      if (_enteredNumber.isNotEmpty) _enteredNumber = _enteredNumber.substring(0, _enteredNumber.length - 1);
-      _numberAndTitle = _enteredNumber;
+      if (_input.isNotEmpty) _input = _input.substring(0, _input.length - 1);
       _refreshView();
     });
     _startTimer();
   }
 
   void _onOkButtonPressed() {
-    var number = int.tryParse(_enteredNumber);
-    if (number != null && number > 0 && number <= _lieder.length) {
-      _routeState.go('${Buch.current().route()}/lied/$number');
-    } else {
-      _enteredNumber = '';
-      _numberAndTitle = '';
-      _text = '';
+    var number = numberFromString(Buch.current(), _input);
+    if (number != null) {
+      _routeState.go('${Buch.current().route()}/text/$number');
     }
   }
 
-  @override
-  void initState() {
-    _enteredNumber = GetStorage().read('number') ?? '';
-    _refreshView();
-
-    disposeListen = GetStorage().listenKey('buch', (value) {
-      _lieder = getLieder();
-      _refreshView();
-    });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _stopTimer();
-    disposeListen?.call();
-    super.dispose();
+  void _onPDFButtonPressed() {
+    var number = numberFromString(Buch.current(), _input);
+    if (number != null) {
+      _routeState.go('${Buch.current().route()}/noten/$number');
+    }
   }
 
   @override
@@ -140,6 +142,7 @@ class _NumberScreenState extends State<NumberScreen> {
                 _buildDeleteButton(),
                 _buildNumberButton('0'),
                 _buildOkButton(),
+                if (hasPDF(Buch.current())) _buildPDFButton(),
               ],
             ),
           ],
@@ -191,6 +194,19 @@ class _NumberScreenState extends State<NumberScreen> {
         child: const Padding(
           padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
           child: Icon(Icons.check_circle_outline, size: 30),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPDFButton() {
+    return Padding(
+      padding: const EdgeInsets.all(1),
+      child: ElevatedButton(
+        onPressed: () => _onPDFButtonPressed(),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+          child: Icon(Icons.audio_file_outlined, size: 30),
         ),
       ),
     );

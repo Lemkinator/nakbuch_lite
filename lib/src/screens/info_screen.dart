@@ -7,6 +7,7 @@ import 'package:file_picker/_internal/file_picker_web.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:hive/hive.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -146,6 +147,7 @@ class _InfoScreenState extends State<InfoScreen> {
             onPressed: () {
               Navigator.of(context).pop();
               GetStorage('custom_lieder').erase();
+              Hive.box('pdf').clear();
             },
           ),
           TextButton(
@@ -167,7 +169,7 @@ class _InfoScreenState extends State<InfoScreen> {
     if (result != null) {
       for (var file in result.files) {
         if (file.extension == 'json') {
-          processJSON(file);
+          processJSON(file.name, file.bytes!);
         } else if (file.extension == 'zip') {
           processZIP(file);
         }
@@ -175,15 +177,15 @@ class _InfoScreenState extends State<InfoScreen> {
     }
   }
 
-  processJSON(PlatformFile file) {
-    var content = utf8.decode(file.bytes!);
-    if (file.name.startsWith('hymnsGesangbuch')) {
+  processJSON(String fileName, Uint8List bytes) {
+    var content = utf8.decode(bytes);
+    if (fileName.startsWith('hymnsGesangbuch')) {
       GetStorage('custom_lieder').write(Buch.gesangbuch.path(), content);
-    } else if (file.name.startsWith('hymnsChorbuch')) {
+    } else if (fileName.startsWith('hymnsChorbuch')) {
       GetStorage('custom_lieder').write(Buch.chorbuch.path(), content);
-    } else if (file.name.startsWith('hymnsJugendliederbuch')) {
+    } else if (fileName.startsWith('hymnsJugendliederbuch')) {
       GetStorage('custom_lieder').write(Buch.jugendliederbuch.path(), content);
-    } else if (file.name.startsWith('hymnsJBErgaenzungsheft')) {
+    } else if (fileName.startsWith('hymnsJBErgaenzungsheft')) {
       GetStorage('custom_lieder').write(Buch.jbergaenzungsheft.path(), content);
     }
   }
@@ -192,20 +194,25 @@ class _InfoScreenState extends State<InfoScreen> {
     var bytes = file.bytes;
     var zip = ZipDecoder().decodeBytes(bytes!);
     for (var file in zip.files) {
-      file.content;
-      var filename = file.name;
-      if (filename.endsWith('.json')) {
-        var content = utf8.decode(file.content);
-        if (filename.startsWith('hymnsGesangbuch')) {
-          GetStorage('custom_lieder').write(Buch.gesangbuch.path(), content);
-        } else if (filename.startsWith('hymnsChorbuch')) {
-          GetStorage('custom_lieder').write(Buch.chorbuch.path(), content);
-        } else if (filename.startsWith('hymnsJugendliederbuch')) {
-          GetStorage('custom_lieder').write(Buch.jugendliederbuch.path(), content);
-        } else if (filename.startsWith('hymnsJBErgaenzungsheft')) {
-          GetStorage('custom_lieder').write(Buch.jbergaenzungsheft.path(), content);
-        }
+      var fileName = file.name;
+      if (fileName.endsWith('.json')) {
+        processJSON(fileName, file.content);
+      } else if (fileName.endsWith('.pdf')) {
+        processPDF(fileName, file.content);
       }
+    }
+  }
+
+  processPDF(String fileName, Uint8List bytes) {
+    var box = Hive.box('pdf');
+    if (fileName.startsWith('Gesangbuch')) {
+      box.put(Buch.gesangbuch.path(), bytes);
+    } else if (fileName.startsWith('Chorbuch')) {
+      box.put(Buch.chorbuch.path(), bytes);
+    } else if (fileName.startsWith('Jugendliederbuch')) {
+      box.put(Buch.jugendliederbuch.path(), bytes);
+    } else if (fileName.startsWith('JBErgaenzungsheft')) {
+      box.put(Buch.jbergaenzungsheft.path(), bytes);
     }
   }
 }

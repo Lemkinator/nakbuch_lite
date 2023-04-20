@@ -6,8 +6,8 @@ class ScreenLayout extends StatelessWidget {
   final String? title;
   final String? subtitle;
   final String? backgroundImage;
-
   final double maxWidth;
+  final List<Widget>? actions;
   final List<Widget> childs;
 
   const ScreenLayout({
@@ -16,6 +16,7 @@ class ScreenLayout extends StatelessWidget {
     this.subtitle,
     this.backgroundImage,
     this.maxWidth = 1000,
+    this.actions,
     required this.childs,
   }) : super(key: key);
 
@@ -25,6 +26,7 @@ class ScreenLayout extends StatelessWidget {
       appBar: title != null && backgroundImage == null
           ? AppBar(
               title: Text(title!),
+              actions: actions,
             )
           : null,
       body: CustomScrollView(

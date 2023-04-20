@@ -34,9 +34,13 @@ class _HomeNavigatorState extends State<HomeNavigator> {
     final pathTemplate = routeState.route.pathTemplate;
     final buch = Buch.current();
 
-    int? lied;
-    if (pathTemplate == '${buch.route()}/lied/:liedId') {
-      lied = int.tryParse(routeState.route.parameters['liedId'] ?? '');
+    int? textLied;
+    if (pathTemplate == '${buch.route()}/text/:lied') {
+      textLied = int.tryParse(routeState.route.parameters['lied'] ?? '');
+    }
+    int? notenLied;
+    if (pathTemplate == '${buch.route()}/noten/:lied') {
+      notenLied = int.tryParse(routeState.route.parameters['lied'] ?? '');
     }
 
     return Navigator(
@@ -47,6 +51,10 @@ class _HomeNavigatorState extends State<HomeNavigator> {
         if (route.settings is Page) {
           routeState.go(buch.route());
         }
+        /*if (route.settings is Page &&
+            (route.settings as Page).key == _scaffoldKey) {
+          routeState.go('/');
+        }*/
 
         return route.didPop(result);
       },
@@ -62,10 +70,20 @@ class _HomeNavigatorState extends State<HomeNavigator> {
             ),
           ),
           // Add an additional page to the stack if the user is viewing an app or media
-          if (lied != null)
+          if (textLied != null)
             MaterialPage<void>(
               child: LiedScreen(
-                nummer: lied,
+                nummer: textLied,
+              ),
+            ),
+          if (pathTemplate == '${buch.route()}/noten')
+            const MaterialPage<void>(
+              child: PDFScreen(),
+            ),
+          if (notenLied != null)
+            MaterialPage<void>(
+              child: PDFScreen(
+                nummer: notenLied,
               ),
             ),
         ],

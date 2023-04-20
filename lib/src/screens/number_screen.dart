@@ -44,10 +44,11 @@ class _NumberScreenState extends State<NumberScreen> {
     super.dispose();
   }
 
-  void _refreshView(){
+  void _refreshView() {
     setState(() {
       final number = numberFromString(Buch.current(), _input);
       if (number != null) {
+        GetStorage().write('lied', _input);
         _numberAndTitle = _lieder[number - 1].numberAndTitle();
         _text = _lieder[number - 1].text;
       } else {
@@ -111,7 +112,14 @@ class _NumberScreenState extends State<NumberScreen> {
     _routeState = RouteStateScope.of(context);
 
     return ScreenLayout(childs: <Widget>[
-      h2(themeData, _numberAndTitle),
+      Text(
+        _numberAndTitle,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: themeData.textTheme.headlineMedium?.copyWith(
+          color: themeData.colorScheme.primary,
+        ),
+      ),
       smallSpace(),
       SizedBox(
         child: Column(

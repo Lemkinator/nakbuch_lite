@@ -128,12 +128,13 @@ class _InfoScreenState extends State<InfoScreen> {
     }
   }
 
-  _openDialog(BuildContext context) {
-    showDialog<void>(
+  _openDialog(BuildContext context) async {
+    await showDialog<void>(
       context: context,
+      barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const Text('Custom Text'),
-        //content: const Text(''),
+        title: const Text('NAK Buch Lite Plus'),
+        content: const Text('ZIP oder JSON Datei hinzufügen oder aktuell hinzugefügtes löschen.'),
         actions: <Widget>[
           FilledButton(
             child: const Text('Hinzufügen'),
@@ -171,7 +172,8 @@ class _InfoScreenState extends State<InfoScreen> {
         if (file.extension == 'json') {
           processJSON(file.name, file.bytes!);
         } else if (file.extension == 'zip') {
-          processZIP(file);
+          await compute(processZIP, file);
+          //processZIP(file);
         }
       }
     }

@@ -1,5 +1,32 @@
 <!DOCTYPE html>
 <html>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.js" type="text/javascript"></script>
+<script type="text/javascript">
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.worker.min.js";
+    pdfRenderOptions = {
+      cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/cmaps/',
+      cMapPacked: true,
+    }
+
+</script>
+<script>
+    window.addEventListener('load', function(ev) {
+      // Download main.dart.js
+      _flutter.loader.loadEntrypoint({
+        serviceWorker: {
+          serviceWorkerVersion: serviceWorkerVersion,
+        },
+        onEntrypointLoaded: function(engineInitializer) {
+          engineInitializer.initializeEngine().then(function(appRunner) {
+            appRunner.runApp();
+          });
+        }
+      });
+    });
+
+</script>
+</body>
 <head>
     <!--
       If you are serving your web app in a path other than the root, change the
@@ -31,6 +58,13 @@
     <title>NAK Buch Lite</title>
     <link rel="manifest" href="manifest.json">
 
+    <style>
+      html, body {
+        background-color: #000000;
+      }
+
+    </style>
+
     <script type="text/javascript">
       // Single Page Apps for GitHub Pages
       // MIT License
@@ -55,43 +89,19 @@
 
     </script>
 
-    // Access to IndexedDB for safari ios problem: https://developer.apple.com/forums/thread/681201
     <script type="text/javascript">
+     //Access to IndexedDB for safari ios problem: https://developer.apple.com/forums/thread/681201
      window.indexedDB;
-  </script>
+
+    </script>
 
     <script>
     // The value below is injected by flutter build, do not touch.
-    var serviceWorkerVersion = '1639922090';
+    var serviceWorkerVersion = '1961576015';
+
 
     </script>
     <!-- This script adds the flutter initialization JS code -->
     <script src="flutter.js" defer></script>
 </head>
-<body>
-  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.js" type="text/javascript"></script>
-  <script type="text/javascript">
-    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.worker.min.js";
-    pdfRenderOptions = {
-      cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/cmaps/',
-      cMapPacked: true,
-    }
-  </script>
-<script>
-    window.addEventListener('load', function(ev) {
-      // Download main.dart.js
-      _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        },
-        onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine().then(function(appRunner) {
-            appRunner.runApp();
-          });
-        }
-      });
-    });
-
-</script>
-</body>
 </html>

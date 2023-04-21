@@ -165,16 +165,31 @@ class _InfoScreenState extends State<InfoScreen> {
     var result = await filePicker.pickFiles(
       allowMultiple: true,
       type: FileType.custom,
-      allowedExtensions: ['zip', 'json'],
+      allowedExtensions: ['zip', 'json', 'pdf'],
     );
     if (result != null) {
       for (var file in result.files) {
         if (file.extension == 'json') {
           processJSON(file.name, file.bytes!);
+        } else if (file.extension == 'pdf') {
+          processPDF(file.name, file.bytes!);
         } else if (file.extension == 'zip') {
           await compute(processZIP, file);
           //processZIP(file);
         }
+      }
+    }
+  }
+
+  processZIP(PlatformFile file) {
+    var bytes = file.bytes;
+    var zip = ZipDecoder().decodeBytes(bytes!);
+    for (var file in zip.files) {
+      var fileName = file.name;
+      if (fileName.endsWith('.json')) {
+        processJSON(fileName, file.content);
+      } else if (fileName.endsWith('.pdf')) {
+        processPDF(fileName, file.content);
       }
     }
   }
@@ -189,19 +204,6 @@ class _InfoScreenState extends State<InfoScreen> {
       GetStorage('custom_lieder').write(Buch.jugendliederbuch.path(), content);
     } else if (fileName.startsWith('hymnsJBErgaenzungsheft')) {
       GetStorage('custom_lieder').write(Buch.jbergaenzungsheft.path(), content);
-    }
-  }
-
-  processZIP(PlatformFile file) {
-    var bytes = file.bytes;
-    var zip = ZipDecoder().decodeBytes(bytes!);
-    for (var file in zip.files) {
-      var fileName = file.name;
-      if (fileName.endsWith('.json')) {
-        processJSON(fileName, file.content);
-      } else if (fileName.endsWith('.pdf')) {
-        processPDF(fileName, file.content);
-      }
     }
   }
 

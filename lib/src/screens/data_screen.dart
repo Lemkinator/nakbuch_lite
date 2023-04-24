@@ -74,9 +74,27 @@ class _DataScreenState extends State<DataScreen> {
                     top: Radius.circular(index == 0 ? 16 : 0),
                     bottom: Radius.circular(index == _lieder.length - 1 ? 16 : 0),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Text(item.numberAndTitle()),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(120, 120, 120, 0.1),
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(index == 0 ? 16 : 0),
+                        bottom: Radius.circular(index == _lieder.length - 1 ? 16 : 0),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Text(item.numberAndTitle()),
+                        ),
+                        if (index != _lieder.length - 1)
+                          const Divider(
+                            height: 0.5,
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               ),

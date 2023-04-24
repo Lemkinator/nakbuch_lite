@@ -46,7 +46,11 @@ class _LiedScreenState extends State<LiedScreen> {
 
     return LiquidSwipe(
       onPageChangeCallback: (page) {
-        RouteStateScope.of(context).go('${Buch.current().route()}/text/${page + 1}');
+        setState(() {
+          _nummer = page + 1;
+          _isFavorite = GetStorage('data').read('favorites_${Buch.current().path()}_$_nummer') ?? false;
+        });
+        //RouteStateScope.of(context).go('${Buch.current().route()}/text/${page + 1}');
       },
       liquidController: liquidController,
       initialPage: _index,

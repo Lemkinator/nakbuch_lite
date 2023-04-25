@@ -27,6 +27,12 @@ class ScreenLayout extends StatelessWidget {
           ? AppBar(
               title: Text(title!),
               actions: actions,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
             )
           : null,
       body: CustomScrollView(

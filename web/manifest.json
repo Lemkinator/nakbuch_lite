@@ -8,6 +8,51 @@
     "description": "The new non-official songbook (lite-) app of the New Apostolic Church.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
+    "screenshots": [
+        {
+            "src": "screenshots/screenshot1_narrow.png",
+            "sizes": "450x900",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Nummer"
+        },
+        {
+            "src": "screenshots/screenshot2_narrow.png",
+            "sizes": "450x900",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Liste'"
+        },
+        {
+            "src": "screenshots/screenshot3_narrow.png",
+            "sizes": "450x900",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Daten"
+        },
+        {
+            "src": "screenshots/screenshot1_wide.png",
+            "sizes": "900x1600",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Nummer"
+        },
+        {
+            "src": "screenshots/screenshot2_wide.png",
+            "sizes": "900x1600",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Liste"
+        },
+        {
+            "src": "screenshots/screenshot3_wide.png",
+            "sizes": "900x1600",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Daten"
+        }
+
+    ],
     "icons": [
         {
             "src": "icons/Icon-192.png",

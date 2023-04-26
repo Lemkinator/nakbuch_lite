@@ -27,10 +27,16 @@ const RESOURCES = {
 "icons/Icon-512.png": "e86f2fc79e379b5897e963c7cbb7ef72",
 "icons/Icon-maskable-192.png": "c750ffdb986b948ae7d03932b55fbaa6",
 "icons/Icon-maskable-512.png": "e86f2fc79e379b5897e963c7cbb7ef72",
-"index.html": "c12d54c1205f5ed6feb0ce9493a8b21f",
-"/": "c12d54c1205f5ed6feb0ce9493a8b21f",
-"main.dart.js": "ea659f7510bf11bb7d4d88d84395caf5",
-"manifest.json": "d2387b59e4eed2504a96c390a1497d8a",
+"index.html": "5768edeae05a1ffb9b05752706a4e074",
+"/": "5768edeae05a1ffb9b05752706a4e074",
+"main.dart.js": "7cfd0c9d6014632c92a391ed560ae724",
+"manifest.json": "cd7feb9faa8fc954a267fdb01863e92d",
+"screenshots/screenshot1_narrow.png": "ef40c7f4e2cb2b502e5caabc184ebbbc",
+"screenshots/screenshot1_wide.png": "6b80ec8fa8d657ffac180b7de2eff087",
+"screenshots/screenshot2_narrow.png": "9a7506618e0fdfcdf17d8e4f20fdfd96",
+"screenshots/screenshot2_wide.png": "851e736af162dc800f0c5cb5508f5f68",
+"screenshots/screenshot3_narrow.png": "9437e16ef2ff7b7bdd5e59893ad212f9",
+"screenshots/screenshot3_wide.png": "23ac84429a1aac1aa01df754d035ddad",
 "version.json": "83b5dfb029802cfcdc107f16edc050f4"
 };
 

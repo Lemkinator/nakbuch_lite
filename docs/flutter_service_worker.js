@@ -3,7 +3,8 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "404.html": "b709bbf2baf0c08d315c2104a800344a",
+  ".well-known/assetlinks.json": "ae103b40fc1b9a79c7cd4e5a2dcb925e",
+"404.html": "b709bbf2baf0c08d315c2104a800344a",
 "assets/AssetManifest.json": "8c3ee89b805ea388386239cf157f8686",
 "assets/assets/hymnsChorbuchNoCopyright.json": "a52bead1cbba6b7ace85915fdcfead53",
 "assets/assets/hymnsGesangbuchNoCopyright.json": "b514a9ef9d748b4f600881dfd33d48a8",
@@ -27,8 +28,8 @@ const RESOURCES = {
 "icons/Icon-512.png": "e86f2fc79e379b5897e963c7cbb7ef72",
 "icons/Icon-maskable-192.png": "c750ffdb986b948ae7d03932b55fbaa6",
 "icons/Icon-maskable-512.png": "e86f2fc79e379b5897e963c7cbb7ef72",
-"index.html": "5768edeae05a1ffb9b05752706a4e074",
-"/": "5768edeae05a1ffb9b05752706a4e074",
+"index.html": "b708bbb8df531446c15973504589dd7f",
+"/": "b708bbb8df531446c15973504589dd7f",
 "main.dart.js": "7cfd0c9d6014632c92a391ed560ae724",
 "manifest.json": "cd7feb9faa8fc954a267fdb01863e92d",
 "screenshots/screenshot1_narrow.png": "ef40c7f4e2cb2b502e5caabc184ebbbc",

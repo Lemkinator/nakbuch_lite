@@ -1,0 +1,11 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "de.lemke.nakbuch",
+      "sha256_cert_fingerprints":
+      ["79:63:1E:68:9A:C2:F2:77:7C:87:52:F9:20:36:DB:D9:46:75:49:DA:18:D2:6B:05:4C:CA:92:F6:A1:D0:89:08"]
+    }
+  }
+]

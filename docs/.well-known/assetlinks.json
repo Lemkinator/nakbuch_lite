@@ -4,8 +4,10 @@
     "target": {
       "namespace": "android_app",
       "package_name": "de.lemke.nakbuch",
-      "sha256_cert_fingerprints":
-      ["79:63:1E:68:9A:C2:F2:77:7C:87:52:F9:20:36:DB:D9:46:75:49:DA:18:D2:6B:05:4C:CA:92:F6:A1:D0:89:08"]
+      "sha256_cert_fingerprints": [
+        "79:63:1E:68:9A:C2:F2:77:7C:87:52:F9:20:36:DB:D9:46:75:49:DA:18:D2:6B:05:4C:CA:92:F6:A1:D0:89:08",
+        "DF:64:7A:9F:E3:9B:57:58:9D:B8:40:5E:FE:AB:A6:2C:09:7D:5D:E2:CA:05:3D:D0:1F:90:F1:55:42:6B:B2:51"
+      ]
     }
   }
 ]

@@ -20,28 +20,26 @@ class HomeScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routeState = RouteStateScope.of(context);
-    final buch = Buch.current();
-    final selectedIndex = _getSelectedIndex(routeState.route.pathTemplate);
+    final selectedIndex = _getSelectedIndex(routeState.route);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          title: Text('${buch.name()} - NAK Buch Lite'),
+          title: Text('${getCurrentBuch().title} - NAK Buch Lite'),
           actions: appBarActions(
             context,
             themeMode,
             handleThemeModeChange,
-            buch,
+            getCurrentBuch(),
             handleBuchChange,
           )),
       body: AdaptiveNavigationScaffold(
         selectedIndex: selectedIndex,
         body: const HomeScaffoldBody(),
         onDestinationSelected: (idx) {
-          if (idx == 0) routeState.go('${buch.route()}/');
-          if (idx == 1) routeState.go('${buch.route()}/liste');
-          if (idx == 2) routeState.go('${buch.route()}/daten');
-          if (idx == 3) routeState.go('/info');
+          if (idx == 0) routeState.go('/${getCurrentBuch().id}');
+          if (idx == 1) routeState.go('/${getCurrentBuch().id}/liste');
+          if (idx == 2) routeState.go('/info');
         },
         destinations: const [
           NavigationDestination(
@@ -58,12 +56,6 @@ class HomeScaffold extends StatelessWidget {
           ),
           NavigationDestination(
             tooltip: '',
-            icon: Icon(Icons.data_usage_rounded),
-            label: 'Daten',
-            selectedIcon: Icon(Icons.data_usage_rounded),
-          ),
-          NavigationDestination(
-            tooltip: '',
             icon: Icon(Icons.info_outline),
             label: 'Info',
             selectedIcon: Icon(Icons.info_outline),
@@ -72,18 +64,16 @@ class HomeScaffold extends StatelessWidget {
         trailing: NavigationTrailing(
           themeMode: themeMode,
           handleThemeModeChange: handleThemeModeChange,
-          buch: buch,
+          buch: getCurrentBuch(),
           handleBuchChange: handleBuchChange,
         ),
       ),
     );
   }
 
-  int _getSelectedIndex(String pathTemplate) {
-    var buch = Buch.current();
-    if (pathTemplate == '${buch.route()}/liste') return 1;
-    if (pathTemplate == '${buch.route()}/daten') return 2;
-    if (pathTemplate == '/info') return 3;
+  int _getSelectedIndex(ParsedRoute route) {
+    if (route.path == '/info') return 2;
+    if (route.pathTemplate == '/:buch/liste') return 1;
     return 0;
   }
 }

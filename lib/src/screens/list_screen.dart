@@ -1,7 +1,6 @@
 import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:animated_list_plus/transitions.dart';
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 
 import '../data.dart';
 import '../routing.dart';
@@ -16,15 +15,15 @@ class ListScreen extends StatefulWidget {
 }
 
 class _ListScreenState extends State<ListScreen> {
-  late List<Lied> _lieder;
+  late List<Hymn> _hymns;
   Function? disposeListen;
 
   @override
   void initState() {
-    _lieder = getLieder(Buch.current());
-    disposeListen = GetStorage().listenKey('buch', (value) {
+    _hymns = getHymnsWithBuchId(getCurrentBuchId());
+    disposeListen = listenToCurrentBuchId( (value) {
       setState(() {
-        _lieder = getLieder(Buch.current());
+        _hymns = getHymnsWithBuchId(getCurrentBuchId());
       });
     });
     super.initState();
@@ -40,12 +39,12 @@ class _ListScreenState extends State<ListScreen> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: ImplicitlyAnimatedList<Lied>(
+      child: ImplicitlyAnimatedList<Hymn>(
         // The current items in the list.
-        items: _lieder,
+        items: _hymns,
         // Called by the DiffUtil to decide whether two object represent the same item.
         // For example, if your items have unique ids, this method should check their id equality.
-        areItemsTheSame: (a, b) => a.number == b.number,
+        areItemsTheSame: (a, b) => a.nummer == b.nummer,
         // Called, as needed, to build list item widgets.
         // List items are only built when they're scrolled into view.
         itemBuilder: (context, animation, item, index) {
@@ -60,18 +59,18 @@ class _ListScreenState extends State<ListScreen> {
                 width: 1000,
                 child: InkWell(
                   onTap: () {
-                    RouteStateScope.of(context).go('${Buch.current().route()}/text/${item.number}');
+                    RouteStateScope.of(context).go('/${getCurrentBuchId()}/text/${item.nummer}');
                   },
                   borderRadius: BorderRadius.vertical(
                     top: Radius.circular(index == 0 ? 16 : 0),
-                    bottom: Radius.circular(index == _lieder.length - 1 ? 16 : 0),
+                    bottom: Radius.circular(index == _hymns.length - 1 ? 16 : 0),
                   ),
                   child: Container(
                     decoration: BoxDecoration(
                       color: const Color.fromRGBO(120, 120, 120, 0.1),
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(index == 0 ? 16 : 0),
-                        bottom: Radius.circular(index == _lieder.length - 1 ? 16 : 0),
+                        bottom: Radius.circular(index == _hymns.length - 1 ? 16 : 0),
                       ),
                     ),
                     child: Column(
@@ -79,9 +78,9 @@ class _ListScreenState extends State<ListScreen> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(10),
-                          child: Text(item.numberAndTitle()),
+                          child: Text(item.getNummerAndTitle()),
                         ),
-                        if (index != _lieder.length - 1)
+                        if (index != _hymns.length - 1)
                           const Divider(
                             height: 0.5,
                           ),
@@ -99,7 +98,7 @@ class _ListScreenState extends State<ListScreen> {
         removeItemBuilder: (context, animation, oldItem) {
           return FadeTransition(
             opacity: animation,
-            child: Text(oldItem.numberAndTitle()),
+            child: Text(oldItem.getNummerAndTitle()),
           );
         },
       ),

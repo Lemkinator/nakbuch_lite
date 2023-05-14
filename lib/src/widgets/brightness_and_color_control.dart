@@ -35,62 +35,71 @@ class _NavigationTrailingState extends State<NavigationTrailing> {
     ));
   }
 
-  Widget _expandedTrailingActions() => Container(
-        constraints: const BoxConstraints.tightFor(width: 250),
-        padding: const EdgeInsets.symmetric(horizontal: 30),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            InkWell(
-              borderRadius: BorderRadius.circular(16),
-              onTap: () {
-                widget.handleThemeModeChange(null);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    const Text('Thema'),
-                    Expanded(child: Container()),
-                    widget.themeMode == ThemeMode.light
-                        ? const Icon(Icons.light_mode_outlined)
-                        : widget.themeMode == ThemeMode.dark
-                            ? const Icon(Icons.dark_mode_outlined)
-                            : const Icon(Icons.brightness_auto_outlined),
-                  ],
-                ),
+  Widget _expandedTrailingActions() {
+    List<Buch> buecher = getBuecher();
+    return Container(
+      constraints: const BoxConstraints.tightFor(width: 250),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: () {
+              widget.handleThemeModeChange(null);
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  const Text('Thema'),
+                  Expanded(child: Container()),
+                  widget.themeMode == ThemeMode.light
+                      ? const Icon(Icons.light_mode_outlined)
+                      : widget.themeMode == ThemeMode.dark
+                          ? const Icon(Icons.dark_mode_outlined)
+                          : const Icon(Icons.brightness_auto_outlined),
+                ],
               ),
             ),
-            const Divider(),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 200),
-              child: ListView.builder(
-                itemCount: 4,
-                itemBuilder: (context, i) => InkWell(
-                  borderRadius: BorderRadius.circular(16),
-                  onTap: () {
-                    widget.handleBuchChange(Buch.values[i]);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        //colored text
-                        widget.buch == Buch.values[i]
-                            ? Text(Buch.values[i].name(), style: const TextStyle(color: nakbuchBlue))
-                            : Text(Buch.values[i].name()),
-                        Expanded(child: Container()),
-                        widget.buch == Buch.values[i] ? const Icon(Icons.menu_book, color: nakbuchBlue) : const Icon(Icons.menu_book),
-                      ],
-                    ),
+          ),
+          const Divider(),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 260),
+            child: ListView.builder(
+              itemCount: buecher.length,
+              itemBuilder: (context, i) => InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () {
+                  widget.handleBuchChange(buecher[i]);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      //colored text
+                      Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 4),
+                            child: widget.buch == buecher[i]
+                                ? Text(buecher[i].title, style: const TextStyle(color: nakbuchBlue))
+                                : Text(buecher[i].title),
+                          )),
+                      Flexible(
+                          flex: 0,
+                          child: widget.buch == buecher[i] ? const Icon(Icons.menu_book, color: nakbuchBlue) : const Icon(Icons.menu_book)),
+                    ],
                   ),
                 ),
               ),
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _trailingActions() => Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -172,6 +181,7 @@ class _BuchButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Buch> buecher = getBuecher();
     return PopupMenuButton(
       icon: Icon(
         Icons.menu_book,
@@ -180,26 +190,28 @@ class _BuchButton extends StatelessWidget {
       tooltip: 'Buch auswählen',
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       itemBuilder: (context) {
-        return List.generate(4, (index) {
+        return List.generate(buecher.length, (index) {
           return PopupMenuItem(
             value: index,
-            enabled: index != Buch.values.indexOf(buch),
-            child: Wrap(
+            enabled: index != buecher.indexOf(buch),
+            child: Row(
               children: [
                 const Padding(
-                  padding: EdgeInsets.only(left: 10),
+                  padding: EdgeInsets.only(left: 4),
                   child: Icon(Icons.menu_book),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Text(Buch.values[index].name()),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 12),
+                    child: Text(buecher[index].title, ),
+                  ),
                 ),
               ],
             ),
           );
         });
       },
-      onSelected: (int index) => handleBuchChange(Buch.values[index]),
+      onSelected: (int index) => handleBuchChange(buecher[index]),
     );
   }
 }

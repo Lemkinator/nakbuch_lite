@@ -6,13 +6,13 @@ import 'package:confetti/confetti.dart';
 import 'package:file_picker/_internal/file_picker_web.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:material_loading_buttons/material_loading_buttons.dart';
 
-import '../data.dart';
 import '../widgets.dart';
+import '../data.dart';
 
 class InfoScreen extends StatefulWidget {
   const InfoScreen({
@@ -66,10 +66,12 @@ class _InfoScreenState extends State<InfoScreen> {
             p(themeData,
                 'Diese App steht in keiner Verbindung zur Neuapostolischen Kirche oder der Verlag Friedrich Bischoff GmbH und beinhaltet lediglich die urheberrechtsfreien Texte aus dem folgenden Büchern:'),
             smallSpace(),
-            li(themeData, 'Gesangbuch (320 von 438 Liedern)'),
-            li(themeData, 'Chorbuch (206 von 462 Liedern)'),
-            li(themeData, 'Jugendliederbuch (41 von 102 Liedern)'),
+            li(themeData, 'Gesangbuch (321 von 438 Liedern)'),
+            li(themeData, 'Chorbuch (208 von 462 Liedern)'),
+            li(themeData, 'Jugendliederbuch (42 von 102 Liedern)'),
             li(themeData, 'Ergänzungsheft zum Jugendliederbuch (3 von 20 Liedern)'),
+            li(themeData, 'Lieder zum Glauben 2 (7 von 20 Liedern)'),
+            li(themeData, 'Chorliedersammlung 2 (41 von 159 Liedern)'),
             mediumSpace(),
             p(themeData,
                 'Bei den restlichen Liedern liegen die Rechte noch bei den Urhebern, weshalb diese nicht oder nur teilweise angezeigt werden können.'),
@@ -78,6 +80,51 @@ class _InfoScreenState extends State<InfoScreen> {
             mediumSpace(),
             p(themeData,
                 'Die Verwaltung der Rechte obliegt u.a. der Verlag Friedrich Bischoff GmbH, welche selbst eine (kostenpflichtige) App für das Gesangbuch und eine (kostenpflichtige) App für das Chorbuch herausgegeben hat.'),
+            largeSpace(),
+            largeSpace(),
+            h1(themeData, 'Impressum'),
+            smallSpace(),
+            p(themeData, 'Leonard Lemke'),
+            mediumSpace(),
+            h3(themeData, 'Kontakt'),
+            smallSpace(),
+            Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              alignment: WrapAlignment.center,
+              children: [
+                p(themeData, 'E-Mail: '),
+                TextButton(
+                  onPressed: () {
+                    launchUrl(Uri.parse('mailto:nakbuch@leonard-lemke.com'));
+                  },
+                  child: const Text('nakbuch@leonard-lemke.com'),
+                )
+              ],
+            ),
+            mediumSpace(),
+            h2(themeData, 'Haftungsausschluss'),
+            smallSpace(),
+            h3(themeData, 'Haftung für Inhalte'),
+            smallSpace(),
+            p(themeData,
+                'Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Wir sind nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.'),
+            smallSpace(),
+            h3(themeData, 'Haftung für Links'),
+            smallSpace(),
+            p(themeData,
+                'Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen.'),
+            smallSpace(),
+            h3(themeData, 'Urheberrecht'),
+            smallSpace(),
+            p(themeData, 'Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet. Insbesondere werden Inhalte Dritter als solche gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend entfernen.'),
+            smallSpace(),
+            h3(themeData, 'Datenschutz'),
+            smallSpace(),
+            p(themeData, 'Die Nutzung unserer Webseite ist in der Regel ohne Angabe personenbezogener Daten möglich. Soweit auf unseren Seiten personenbezogene Daten (beispielsweise Name, Anschrift oder eMail-Adressen) erhoben werden, erfolgt dies, soweit möglich, stets auf freiwilliger Basis. Diese Daten werden ohne Ihre ausdrückliche Zustimmung nicht an Dritte weitergegeben.'),
+            smallSpace(),
+            p(themeData, 'Wir weisen darauf hin, dass die Datenübertragung im Internet (z.B. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen kann. Ein lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist nicht möglich.'),
+            smallSpace(),
+            p(themeData, 'Der Nutzung von im Rahmen der Impressumspflicht veröffentlichten Kontaktdaten durch Dritte zur Übersendung von nicht ausdrücklich angeforderter Werbung und Informationsmaterialien wird hiermit ausdrücklich widersprochen. Die Betreiber der Seiten behalten sich ausdrücklich rechtliche Schritte im Falle der unverlangten Zusendung von Werbeinformationen, etwa durch Spam-Mails, vor.'),
             largeSpace(),
           ],
         ),
@@ -133,23 +180,25 @@ class _InfoScreenState extends State<InfoScreen> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const Text('NAK Buch Lite Plus'),
+        title: const Text('NAK Buch Plus'),
         content: const Text('ZIP oder JSON Dateien hinzufügen oder aktuell hinzugefügtes löschen.'),
         actions: <Widget>[
-          FilledButton(
+          FilledAutoLoadingButton(
+            onPressed: () async {
+              var nav = Navigator.of(context);
+              await _openFilePicker();
+              nav.pop();
+            },
             child: const Text('Hinzufügen'),
-            onPressed: () {
-              _openFilePicker();
-              Navigator.of(context).pop();
-            },
           ),
-          ElevatedButton(
-            child: const Text('Löschen'),
-            onPressed: () {
-              Navigator.of(context).pop();
-              GetStorage('custom_lieder').erase();
-              Hive.box('pdf').clear();
+          ElevatedAutoLoadingButton(
+            onPressed: () async {
+              var nav = Navigator.of(context);
+              await setDefaultNAKBuch();
+              deleteAllPDFs();
+              nav.pop();
             },
+            child: const Text('Löschen'),
           ),
           TextButton(
             child: const Text('Abbrechen'),
@@ -174,8 +223,7 @@ class _InfoScreenState extends State<InfoScreen> {
         } else if (file.extension == 'pdf') {
           processPDF(file.name, file.bytes!);
         } else if (file.extension == 'zip') {
-          await compute(processZIP, file);
-          //processZIP(file);
+          processZIP(file);
         }
       }
     }
@@ -196,27 +244,16 @@ class _InfoScreenState extends State<InfoScreen> {
 
   processJSON(String fileName, Uint8List bytes) {
     var content = utf8.decode(bytes);
-    if (fileName.startsWith('hymnsGesangbuch')) {
-      GetStorage('custom_lieder').write(Buch.gesangbuch.path(), content);
-    } else if (fileName.startsWith('hymnsChorbuch')) {
-      GetStorage('custom_lieder').write(Buch.chorbuch.path(), content);
-    } else if (fileName.startsWith('hymnsJugendliederbuch')) {
-      GetStorage('custom_lieder').write(Buch.jugendliederbuch.path(), content);
-    } else if (fileName.startsWith('hymnsJBErgaenzungsheft')) {
-      GetStorage('custom_lieder').write(Buch.jbergaenzungsheft.path(), content);
+    try {
+      var nakbuch = NAKBuch.fromJson(jsonDecode(content));
+      setNAKBuch(nakbuch);
+    } catch (e) {
+      if (kDebugMode) print(e);
     }
   }
 
   processPDF(String fileName, Uint8List bytes) {
     var box = Hive.box('pdf');
-    if (fileName.startsWith('Gesangbuch')) {
-      box.put(Buch.gesangbuch.path(), bytes);
-    } else if (fileName.startsWith('Chorbuch')) {
-      box.put(Buch.chorbuch.path(), bytes);
-    } else if (fileName.startsWith('Jugendliederbuch')) {
-      box.put(Buch.jugendliederbuch.path(), bytes);
-    } else if (fileName.startsWith('JBErgaenzungsheft')) {
-      box.put(Buch.jbergaenzungsheft.path(), bytes);
-    }
+    box.put(fileName.replaceAll('.pdf', ''), bytes);
   }
 }

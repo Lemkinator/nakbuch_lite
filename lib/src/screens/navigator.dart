@@ -32,14 +32,14 @@ class _HomeNavigatorState extends State<HomeNavigator> {
   Widget build(BuildContext context) {
     final routeState = RouteStateScope.of(context);
     final pathTemplate = routeState.route.pathTemplate;
-    final buch = Buch.current();
+    final buchId = getCurrentBuchId();
 
     int? textLied;
-    if (pathTemplate == '${buch.route()}/text/:lied') {
+    if (pathTemplate == '/:buch/text/:lied') {
       textLied = int.tryParse(routeState.route.parameters['lied'] ?? '');
     }
     int? notenLied;
-    if (pathTemplate == '${buch.route()}/noten/:lied') {
+    if (pathTemplate == '/:buch/noten/:lied') {
       notenLied = int.tryParse(routeState.route.parameters['lied'] ?? '');
     }
 
@@ -49,7 +49,7 @@ class _HomeNavigatorState extends State<HomeNavigator> {
         // When a page that is stacked on top of the scaffold is popped, display
         // the /books or /authors tab in HomeScaffold.
         if (route.settings is Page) {
-          routeState.go(buch.route());
+          routeState.go('/$buchId');
         }
         /*if (route.settings is Page &&
             (route.settings as Page).key == _scaffoldKey) {
@@ -76,10 +76,10 @@ class _HomeNavigatorState extends State<HomeNavigator> {
                 nummer: textLied,
               ),
             ),
-          if (pathTemplate == '${buch.route()}/noten')
+          /*if (pathTemplate == '/$buchId/noten')
             const MaterialPage<void>(
               child: PDFScreen(),
-            ),
+            ),*/
           if (notenLied != null)
             MaterialPage<void>(
               child: PDFScreen(

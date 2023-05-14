@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../data.dart';
 import '../screens.dart';
 import '../routing.dart';
 import '../widgets/fade_transition_page.dart';
@@ -16,7 +15,6 @@ class HomeScaffoldBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var currentRoute = RouteStateScope.of(context).route;
-    var buch = Buch.current();
 
     // A nested Router isn't necessary because the back button behavior doesn't
     // need to be customized.
@@ -24,25 +22,20 @@ class HomeScaffoldBody extends StatelessWidget {
       key: navigatorKey,
       onPopPage: (route, dynamic result) => route.didPop(result),
       pages: [
-        if (currentRoute.pathTemplate == buch.route())
+        if (currentRoute.path == '/info')
           const FadeTransitionPage<void>(
-            key: ValueKey('number'),
-            child: NumberScreen(),
+            key: ValueKey('info'),
+            child: InfoScreen(),
           )
-        else if (currentRoute.pathTemplate == '${buch.route()}/liste')
+        else if (currentRoute.pathTemplate == '/:buch/liste')
           const FadeTransitionPage<void>(
             key: ValueKey('list'),
             child: ListScreen(),
           )
-        else if (currentRoute.pathTemplate == '${buch.route()}/daten')
+        else if (currentRoute.pathTemplate == '/:buch')
           const FadeTransitionPage<void>(
-            key: ValueKey('data'),
-            child: DataScreen(),
-          )
-        else if (currentRoute.pathTemplate == '/info')
-          const FadeTransitionPage<void>(
-            key: ValueKey('info'),
-            child: InfoScreen(),
+            key: ValueKey('number'),
+            child: NumberScreen(),
           )
 
         // Avoid building a Navigator with an empty `pages` list when the RouteState is set to an unexpected path

@@ -1,6 +1,4 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:pdfx/pdfx.dart';
 
 import '../data.dart';
@@ -19,12 +17,14 @@ class PDFScreen extends StatefulWidget {
 
 class _PDFScreenState extends State<PDFScreen> {
   late PdfController _pdfController;
+  late Buch _buch;
 
   @override
   void initState() {
+    _buch = getCurrentBuch();
     _pdfController = PdfController(
-      document: PdfDocument.openData(Hive.box('pdf').get(Buch.current().path())),
-      initialPage: (getPDFPageNumbers(Buch.current(), widget.nummer).firstOrNull ?? 0) + 1,
+      document: PdfDocument.openData(getPDF(_buch.id)),
+      initialPage: (getHymn(_buch.id, widget.nummer ?? 0)?.pdfPageIndex ?? 0) + 1,
     );
     super.initState();
   }
@@ -39,7 +39,7 @@ class _PDFScreenState extends State<PDFScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(Buch.current().name()),
+          title: Text(_buch.title),
           actions: [
             IconButton(
               icon: const Icon(Icons.arrow_back_ios),

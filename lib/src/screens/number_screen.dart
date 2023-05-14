@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 import 'dart:async';
 
 import '../data.dart';
@@ -15,9 +14,10 @@ class NumberScreen extends StatefulWidget {
 
 class _NumberScreenState extends State<NumberScreen> {
   late RouteState _routeState;
-  late List<Lied> _lieder;
+  late List<Hymn> _lieder;
+  late Buch _buch;
   String _input = '';
-  String _numberAndTitle = '';
+  String _nummerAndTitle = '';
   String _text = '';
   bool inputOngoing = false;
   Timer? _timer;
@@ -25,12 +25,14 @@ class _NumberScreenState extends State<NumberScreen> {
 
   @override
   void initState() {
-    _lieder = getLieder(Buch.current());
-    _input = GetStorage().read('lied') ?? '';
+    _buch = getCurrentBuch();
+    _lieder = getHymnsWithBuchId(_buch.id);
+    _input = getCurrentNummer();
     _refreshView();
-    disposeListen = GetStorage().listenKey('buch', (value) {
+    disposeListen = listenToCurrentBuchId( (value) {
       setState(() {
-        _lieder = getLieder(Buch.current());
+        _buch = getCurrentBuch();
+        _lieder = getHymnsWithBuchId(_buch.id);
         _refreshView();
       });
     });
@@ -46,14 +48,14 @@ class _NumberScreenState extends State<NumberScreen> {
 
   void _refreshView() {
     setState(() {
-      final number = numberFromString(Buch.current(), _input);
-      if (number != null) {
-        GetStorage().write('lied', _input);
-        _numberAndTitle = _lieder[number - 1].numberAndTitle();
-        _text = _lieder[number - 1].text;
+      final nummer = int.tryParse(_input);
+      if (nummer != null && _buch.hymnExists(nummer)) {
+        setCurrentNummer(_input);
+        _nummerAndTitle = _lieder[nummer - 1].getNummerAndTitle();
+        _text = _lieder[nummer - 1].text;
       } else {
         _input = '';
-        _numberAndTitle = '';
+        _nummerAndTitle = '';
         _text = '';
       }
     });
@@ -93,17 +95,13 @@ class _NumberScreenState extends State<NumberScreen> {
   }
 
   void _onOkButtonPressed() {
-    var number = numberFromString(Buch.current(), _input);
-    if (number != null) {
-      _routeState.go('${Buch.current().route()}/text/$number');
-    }
+    final nummer = int.tryParse(_input);
+    if (nummer != null && _buch.hymnExists(nummer)) _routeState.go('/${_buch.id}/text/$nummer');
   }
 
   void _onPDFButtonPressed() {
-    var number = numberFromString(Buch.current(), _input);
-    if (number != null) {
-      _routeState.go('${Buch.current().route()}/noten/$number');
-    }
+    final nummer = int.tryParse(_input);
+    if (nummer != null && _buch.hymnExists(nummer)) _routeState.go('/${_buch.id}/noten/$nummer');
   }
 
   @override
@@ -113,7 +111,7 @@ class _NumberScreenState extends State<NumberScreen> {
 
     return ScreenLayout(childs: <Widget>[
       Text(
-        _numberAndTitle,
+        _nummerAndTitle,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: themeData.textTheme.headlineMedium?.copyWith(
@@ -150,7 +148,7 @@ class _NumberScreenState extends State<NumberScreen> {
                 _buildDeleteButton(),
                 _buildNumberButton('0'),
                 _buildOkButton(),
-                if (hasPDF(Buch.current())) _buildPDFButton(),
+                if (hasPDF(_buch.id)) _buildPDFButton(),
               ],
             ),
           ],

@@ -44,6 +44,7 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   liquid_swipe: ^3.1.0
+  material_loading_buttons: ^1.1.0
   path_to_regexp: ^0.4.0
   pdfx: ^2.3.0
   quiver: ^3.1.0

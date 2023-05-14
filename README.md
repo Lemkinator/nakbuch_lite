@@ -11,7 +11,7 @@
 
 <img src="assets/images/NAK_Buch_squircle.png" height="150"/>
 
-# NAK Buch
+# NAK Buch Lite
 
 The new non-official songbook (lite-) app of the New Apostolic Church.
 

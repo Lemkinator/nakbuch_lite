@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:get_storage/get_storage.dart';
 
 import 'data.dart';
 import 'routing.dart';
@@ -35,7 +34,7 @@ class _HomeState extends State<Home> {
           themeMode = ThemeMode.system;
         }
       }
-      GetStorage().write('themeMode', themeMode.toString());
+      setThemeMode(themeMode);
     });
   }
 
@@ -43,59 +42,23 @@ class _HomeState extends State<Home> {
     var path = _routeState.route.path;
     var relativeRouteIndex = path.indexOf('/', 1);
     var relativeRoute = relativeRouteIndex == -1 ? '' : path.substring(relativeRouteIndex);
-    _routeState.go('${buch.route()}$relativeRoute');
+    _routeState.go('/${buch.id}$relativeRoute');
   }
 
   @override
   void initState() {
-    var storedThemeMode = GetStorage().read('themeMode');
-    if (storedThemeMode != null) {
-      if (storedThemeMode == 'ThemeMode.dark') {
-        themeMode = ThemeMode.dark;
-      } else if (storedThemeMode == 'ThemeMode.light') {
-        themeMode = ThemeMode.light;
-      } else {
-        themeMode = ThemeMode.system;
-      }
-    }
+    themeMode = getThemeMode();
 
-    /// Configure the parser with all of the app's allowed path templates.
+    /// Configure the parser with all of the app's allowed path templates. Last item has most priority.
     _routeParser = TemplateRouteParser(
       allowedPaths: [
         '/',
+        '/:buch',
         '/info',
-        '/gesangbuch',
-        '/chorbuch',
-        '/jugendliederbuch',
-        '/jbergaenzungsheft',
-        '/gesangbuch/liste',
-        '/chorbuch/liste',
-        '/jugendliederbuch/liste',
-        '/jbergaenzungsheft/liste',
-        '/gesangbuch/daten',
-        '/chorbuch/daten',
-        '/jugendliederbuch/daten',
-        '/jbergaenzungsheft/daten',
-        '/gesangbuch/text/:lied',
-        '/chorbuch/text/:lied',
-        '/jugendliederbuch/text/:lied',
-        '/jbergaenzungsheft/text/:lied',
-        '/gesangbuch/noten',
-        '/chorbuch/noten',
-        '/jugendliederbuch/noten',
-        '/jbergaenzungsheft/noten',
-        '/gesangbuch/noten/:lied',
-        '/chorbuch/noten/:lied',
-        '/jugendliederbuch/noten/:lied',
-        '/jbergaenzungsheft/noten/:lied',
-        '/gb',
-        '/cb',
-        '/jb',
-        '/jbe',
-        '/gb/:lied',
-        '/cb/:lied',
-        '/jb/:lied',
-        '/jbe/:lied',
+        '/:buch/:lied',
+        '/:buch/liste',
+        '/:buch/text/:lied',
+        '/:buch/noten/:lied',
       ],
       initialRoute: '/',
     );

@@ -55,6 +55,15 @@ class _InfoScreenState extends State<InfoScreen> {
             Center(
               child: ElevatedButton(
                 onPressed: () {
+                  launchUrl(Uri.parse('https://play.google.com/store/apps/details?id=de.lemke.nakbuch'));
+                },
+                child: const Text('Android App'),
+              ),
+            ),
+            smallSpace(),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
                   launchUrl(Uri.parse('https://www.leonard-lemke.com'));
                 },
                 child: const Text('Über mich'),

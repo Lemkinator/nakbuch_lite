@@ -21,10 +21,10 @@ packages:
     dependency: "direct main"
     description:
       name: animated_list_plus
-      sha256: fe66f9c300d715254727fbdf050487844d17b013fec344fa28081d29bddbdf1a
+      sha256: f276e3c42a78a76c295186c4723e206dee7660741bd4e9592f9c5530511b7589
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.5"
+    version: "0.5.0"
   animations:
     dependency: "direct main"
     description:
@@ -656,4 +656,4 @@ packages:
     version: "1.0.0"
 sdks:
   dart: ">=3.0.0-417 <4.0.0"
-  flutter: ">=3.4.0-17.0.pre"
+  flutter: ">=3.7.0"

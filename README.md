@@ -16,7 +16,6 @@
 The new non-official songbook (lite-) app of the New Apostolic Church.
 
 ## App: <a target="_blank" href='https://www.nakbuch.de'>www.nakbuch.de </a>
-## More Information: <a target="_blank" href='https://www.leonard-lemke.com/apps/nakbuch_lite'>www.leonard-lemke.com </a>
 
 <br><hr>
 

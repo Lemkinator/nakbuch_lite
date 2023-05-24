@@ -104,9 +104,9 @@ class _InfoScreenState extends State<InfoScreen> {
                 p(themeData, 'E-Mail: '),
                 TextButton(
                   onPressed: () {
-                    launchUrl(Uri.parse('mailto:nakbuch@leonard-lemke.com'));
+                    launchUrl(Uri.parse('mailto:nakbuch-lite@leonard-lemke.com'));
                   },
-                  child: const Text('nakbuch@leonard-lemke.com'),
+                  child: const Text('nakbuch-lite@leonard-lemke.com'),
                 )
               ],
             ),

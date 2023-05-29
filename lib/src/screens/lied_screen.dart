@@ -18,6 +18,7 @@ class LiedScreen extends StatefulWidget {
 }
 
 class _LiedScreenState extends State<LiedScreen> {
+  late double fontSizeFactor;
   late List<Hymn> _lieder;
   late Buch _buch;
   late int _nummer;
@@ -27,6 +28,7 @@ class _LiedScreenState extends State<LiedScreen> {
   @override
   void initState() {
     liquidController = LiquidController();
+    fontSizeFactor = getFontSizeFactor();
     _lieder = getHymnsWithBuchId(getCurrentBuchId());
     _buch = getCurrentBuch();
     _nummer = widget.nummer;
@@ -57,6 +59,22 @@ class _LiedScreenState extends State<LiedScreen> {
       pages: <Widget>[
         for (var i = 0; i < _lieder.length; i++)
           ScreenLayout(title: _buch.title, actions: [
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                setState(() {
+                  fontSizeFactor = increaseFontSizeFactor();
+                });
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.remove),
+              onPressed: () {
+                setState(() {
+                  fontSizeFactor = decreaseFontSizeFactor();
+                });
+              },
+            ),
             if (hasPDF(_buch.id))
               IconButton(
                 icon: const Icon(Icons.audio_file_outlined),
@@ -65,11 +83,23 @@ class _LiedScreenState extends State<LiedScreen> {
                 },
               ),
           ], childs: <Widget>[
-            h3(themeData, _lieder[i].getNummerAndTitle()),
+            Text(
+              _lieder[i].getNummerAndTitle(),
+              style: themeData.textTheme.headlineSmall?.apply(
+                fontSizeFactor: fontSizeFactor + 0.25,
+                color: themeData.colorScheme.secondary,
+              ),
+            ),
             mediumSpace(),
-            p(themeData, _lieder[i].text),
+            Text(
+              _lieder[i].text,
+              style: themeData.textTheme.bodyLarge?.apply(fontSizeFactor: fontSizeFactor),
+            ),
             largeSpace(),
-            p(themeData, _lieder[i].copyright),
+            Text(
+              _lieder[i].copyright,
+              style: themeData.textTheme.bodyLarge?.apply(fontSizeFactor: fontSizeFactor - 0.25),
+            ),
             largeSpace(),
           ])
       ],

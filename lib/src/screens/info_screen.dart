@@ -23,6 +23,80 @@ class InfoScreen extends StatefulWidget {
   State<InfoScreen> createState() => _InfoScreenState();
 }
 
+class InfoGridItem extends StatelessWidget {
+  const InfoGridItem({
+    super.key,
+    required this.title,
+    required this.description,
+    required this.icon,
+    required this.onTap,
+  });
+
+  final String title;
+  final String description;
+  final Icon icon;
+  final Function onTap;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(0, 0, 16, 16),
+        child: InkWell(
+          borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+          onTap: () => onTap,
+          child: Stack(
+            children: [
+              //add icon
+              Positioned(
+                right: 0,
+                top: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: icon,
+                ),
+              ),
+              //add gradient
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.8),
+                    ],
+                  ),
+                ),
+              ),
+              //add text
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      title,
+                      //white text
+                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                            color: Colors.white,
+                          ),
+                    ),
+                    Text(
+                      description,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: Colors.white,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+}
+
 class _InfoScreenState extends State<InfoScreen> {
   late ConfettiController _controllerCenter;
   int versionPressedCounter = 0;
@@ -40,6 +114,25 @@ class _InfoScreenState extends State<InfoScreen> {
               child: ElevatedButton(
                 onPressed: _versionPressed,
                 child: const Text('Version: 1.0.0'),
+              ),
+            ),
+            smallSpace(),
+            Center(
+              child: ElevatedAutoLoadingButton(
+                onPressed: () async {
+                  await _openFilePicker();
+                },
+                child: const Text('Importieren'),
+              ),
+            ),
+            smallSpace(),
+            Center(
+              child: ElevatedAutoLoadingButton(
+                onPressed: () async {
+                  await setDefaultNAKBuch();
+                  deleteAllPDFs();
+                },
+                child: const Text('Zurücksetzen'),
               ),
             ),
             smallSpace(),
@@ -125,15 +218,19 @@ class _InfoScreenState extends State<InfoScreen> {
             smallSpace(),
             h3(themeData, 'Urheberrecht'),
             smallSpace(),
-            p(themeData, 'Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet. Insbesondere werden Inhalte Dritter als solche gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend entfernen.'),
+            p(themeData,
+                'Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet. Insbesondere werden Inhalte Dritter als solche gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend entfernen.'),
             smallSpace(),
             h3(themeData, 'Datenschutz'),
             smallSpace(),
-            p(themeData, 'Die Nutzung unserer Webseite ist in der Regel ohne Angabe personenbezogener Daten möglich. Soweit auf unseren Seiten personenbezogene Daten (beispielsweise Name, Anschrift oder eMail-Adressen) erhoben werden, erfolgt dies, soweit möglich, stets auf freiwilliger Basis. Diese Daten werden ohne Ihre ausdrückliche Zustimmung nicht an Dritte weitergegeben.'),
+            p(themeData,
+                'Die Nutzung unserer Webseite ist in der Regel ohne Angabe personenbezogener Daten möglich. Soweit auf unseren Seiten personenbezogene Daten (beispielsweise Name, Anschrift oder eMail-Adressen) erhoben werden, erfolgt dies, soweit möglich, stets auf freiwilliger Basis. Diese Daten werden ohne Ihre ausdrückliche Zustimmung nicht an Dritte weitergegeben.'),
             smallSpace(),
-            p(themeData, 'Wir weisen darauf hin, dass die Datenübertragung im Internet (z.B. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen kann. Ein lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist nicht möglich.'),
+            p(themeData,
+                'Wir weisen darauf hin, dass die Datenübertragung im Internet (z.B. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen kann. Ein lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist nicht möglich.'),
             smallSpace(),
-            p(themeData, 'Der Nutzung von im Rahmen der Impressumspflicht veröffentlichten Kontaktdaten durch Dritte zur Übersendung von nicht ausdrücklich angeforderter Werbung und Informationsmaterialien wird hiermit ausdrücklich widersprochen. Die Betreiber der Seiten behalten sich ausdrücklich rechtliche Schritte im Falle der unverlangten Zusendung von Werbeinformationen, etwa durch Spam-Mails, vor.'),
+            p(themeData,
+                'Der Nutzung von im Rahmen der Impressumspflicht veröffentlichten Kontaktdaten durch Dritte zur Übersendung von nicht ausdrücklich angeforderter Werbung und Informationsmaterialien wird hiermit ausdrücklich widersprochen. Die Betreiber der Seiten behalten sich ausdrücklich rechtliche Schritte im Falle der unverlangten Zusendung von Werbeinformationen, etwa durch Spam-Mails, vor.'),
             largeSpace(),
           ],
         ),
@@ -179,43 +276,7 @@ class _InfoScreenState extends State<InfoScreen> {
         versionPressedCounter = 0;
       });
       _controllerCenter.play();
-      //when the controller stops, open the file picker
-      Timer(const Duration(seconds: 2), () => _openDialog(context));
     }
-  }
-
-  _openDialog(BuildContext context) async {
-    await showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('NAK Buch Plus'),
-        content: const Text('ZIP oder JSON Dateien hinzufügen oder aktuell hinzugefügtes löschen.'),
-        actions: <Widget>[
-          FilledAutoLoadingButton(
-            onPressed: () async {
-              var nav = Navigator.of(context);
-              await _openFilePicker();
-              nav.pop();
-            },
-            child: const Text('Hinzufügen'),
-          ),
-          ElevatedAutoLoadingButton(
-            onPressed: () async {
-              var nav = Navigator.of(context);
-              await setDefaultNAKBuch();
-              deleteAllPDFs();
-              nav.pop();
-            },
-            child: const Text('Löschen'),
-          ),
-          TextButton(
-            child: const Text('Abbrechen'),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
-      ),
-    );
   }
 
   _openFilePicker() async {

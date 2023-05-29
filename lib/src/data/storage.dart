@@ -43,6 +43,25 @@ setThemeMode(ThemeMode themeMode) {
   GetStorage().write('themeMode', themeMode.toString());
 }
 
+//TextSize
+double getFontSizeFactor() => GetStorage().read('fontSizeFactor') ?? 1;
+
+double increaseFontSizeFactor() {
+  var textSize = getFontSizeFactor();
+  if (textSize < 3) {
+    GetStorage().write('fontSizeFactor', textSize + 0.25);
+  }
+  return getFontSizeFactor();
+}
+
+double decreaseFontSizeFactor() {
+  var textSize = getFontSizeFactor();
+  if (textSize > 0.75) {
+    GetStorage().write('fontSizeFactor', textSize - 0.25);
+  }
+  return getFontSizeFactor();
+}
+
 //Current Buch
 String getCurrentBuchId() => GetStorage().read('buch') ?? 'gb';
 

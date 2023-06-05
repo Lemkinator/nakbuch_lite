@@ -118,7 +118,7 @@ class _InfoScreenState extends State<InfoScreen> {
                     );
                   },
                   icon: Image.asset(
-                    'images/google-play-badge-de.png',
+                    'assets/images/google-play-badge-de.png',
                     width: 200,
                   )),
             ),
@@ -167,15 +167,6 @@ class _InfoScreenState extends State<InfoScreen> {
                   launchUrl(Uri.parse('https://github.com/Lemkinator/nakbuch_lite'));
                 },
                 child: const Text('Source Code'),
-              ),
-            ),
-            smallSpace(),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  launchUrl(Uri.parse('https://play.google.com/store/apps/details?id=de.lemke.nakbuch'));
-                },
-                child: const Text('Android App'),
               ),
             ),
             smallSpace(),

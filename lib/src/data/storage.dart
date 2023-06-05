@@ -82,7 +82,7 @@ setCurrentNummer(String nummer) => GetStorage().write('nummer', nummer);
 
 //NAKBuch
 setDefaultNAKBuch() async {
-  final nakbuchString = await rootBundle.loadString('assets/nakbuchNoCopyright_v5.0.2.json');
+  final nakbuchString = await rootBundle.loadString('assets/nakbuchNoCopyright_v5.0.3.json');
   _nakbuch = NAKBuch.fromJson(jsonDecode(nakbuchString));
   GetStorage('nakbuch').write('nakbuch', nakbuchString);
 }

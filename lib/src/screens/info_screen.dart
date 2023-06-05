@@ -111,12 +111,17 @@ class _InfoScreenState extends State<InfoScreen> {
         ScreenLayout(
           childs: [
             Center(
-              child: ElevatedButton(
-                onPressed: _versionPressed,
-                child: const Text('Version: 1.0.0'),
-              ),
+              child: IconButton(
+                  onPressed: () {
+                    launchUrl(
+                      Uri.parse('https://play.google.com/store/apps/details?id=de.lemke.nakbuch&gl=DE&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'),
+                    );
+                  },
+                  icon: Image.asset(
+                    'images/google-play-badge-de.png',
+                    width: 200,
+                  )),
             ),
-            smallSpace(),
             Center(
               child: ElevatedAutoLoadingButton(
                 onPressed: () async {
@@ -129,8 +134,28 @@ class _InfoScreenState extends State<InfoScreen> {
             Center(
               child: ElevatedAutoLoadingButton(
                 onPressed: () async {
-                  await setDefaultNAKBuch();
-                  deleteAllPDFs();
+                  await showDialog<void>(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Zurücksetzen'),
+                      content: const Text('Importierte Inhalte löschen und Texte zurücksetzen?'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('Abbrechen'),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                        TextButton(
+                          child: const Text('Zurücksetzen'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            setDefaultNAKBuch();
+                            deleteAllPDFs();
+                          },
+                        ),
+                      ],
+                    ),
+                  );
                 },
                 child: const Text('Zurücksetzen'),
               ),
@@ -173,7 +198,7 @@ class _InfoScreenState extends State<InfoScreen> {
             li(themeData, 'Jugendliederbuch (42 von 102 Liedern)'),
             li(themeData, 'Ergänzungsheft zum Jugendliederbuch (3 von 20 Liedern)'),
             li(themeData, 'Lieder zum Glauben 2 (7 von 20 Liedern)'),
-            li(themeData, 'Chorliedersammlung 2 (41 von 159 Liedern)'),
+            //li(themeData, 'Chorliedersammlung 2 (41 von 159 Liedern)'),
             mediumSpace(),
             p(themeData,
                 'Bei den restlichen Liedern liegen die Rechte noch bei den Urhebern, weshalb diese nicht oder nur teilweise angezeigt werden können.'),
@@ -258,25 +283,6 @@ class _InfoScreenState extends State<InfoScreen> {
   void dispose() {
     _controllerCenter.dispose();
     super.dispose();
-  }
-
-  _versionPressed() {
-    setState(() {
-      versionPressedCounter++;
-    });
-
-    timer?.cancel();
-    timer = Timer(
-        const Duration(seconds: 1),
-        () => setState(() {
-              versionPressedCounter = 0;
-            }));
-    if (versionPressedCounter >= 10) {
-      setState(() {
-        versionPressedCounter = 0;
-      });
-      _controllerCenter.play();
-    }
   }
 
   _openFilePicker() async {

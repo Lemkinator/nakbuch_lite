@@ -125,7 +125,27 @@ class _InfoScreenState extends State<InfoScreen> {
             Center(
               child: ElevatedAutoLoadingButton(
                 onPressed: () async {
-                  await _openFilePicker();
+                  await showDialog<void>(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Importieren'),
+                      content: const Text('Durch das importieren werden bisherige Inhalte überschrieben. Fortfahren?'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('Abbrechen'),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                        TextButton(
+                          child: const Text('Importieren'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            _openFilePicker();
+                          },
+                        ),
+                      ],
+                    ),
+                  );
                 },
                 child: const Text('Importieren'),
               ),

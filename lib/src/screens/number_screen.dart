@@ -54,8 +54,7 @@ class _NumberScreenState extends State<NumberScreen> {
         _nummerAndTitle = _lieder[nummer - 1].getNummerAndTitle();
         _text = _lieder[nummer - 1].text;
       } else {
-        _input = '';
-        _nummerAndTitle = '';
+        _nummerAndTitle = _input;
         _text = '';
       }
     });
@@ -64,7 +63,7 @@ class _NumberScreenState extends State<NumberScreen> {
   void _startTimer() {
     inputOngoing = true;
     _stopTimer();
-    _timer = Timer(const Duration(seconds: 3), () {
+    _timer = Timer(const Duration(seconds: 4), () {
       inputOngoing = false;
     });
   }

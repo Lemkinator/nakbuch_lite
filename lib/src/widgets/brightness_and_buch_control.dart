@@ -66,7 +66,7 @@ class _NavigationTrailingState extends State<NavigationTrailing> {
           ),
           const Divider(),
           ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 260),
+            constraints: const BoxConstraints(maxHeight: 300),
             child: ListView.builder(
               itemCount: buecher.length,
               itemBuilder: (context, i) => InkWell(

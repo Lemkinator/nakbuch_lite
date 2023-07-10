@@ -79082,12 +79082,9 @@ s.toString
 r=$.apK()
 p=new A.abS(s)
 q.l(0,p,r)
-s=s.navigator
-q=s.vendor
-q.toString
-s=s.appVersion
+s=s.navigator.userAgent
 s.toString
-p.b=B.d.q(q,"Apple")&&B.d.q(s,"Version")
+p.b=B.d.q(s,"Safari")&&!B.d.q(s,"Chrome")
 A.a68(p,r,!0)
 $.aGi=p
 $.azG()

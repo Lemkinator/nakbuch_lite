@@ -10,9 +10,10 @@
     <title>NAK Buch Lite</title>
     <meta name="description" content="Die neue nicht-offizielle Liederbuch-(Lite-)App der Neuapostolischen Kirche.">
     <meta name="robots" content="index, follow">
-    <meta name="keywords" content="NAK Buch, NAKBuch, nakbuch, NAK, nak, Buch, Gesangbuch, Chorbuch, Jugendliederbuch, Ergänzungsheft, Chorliedersammlung 2, Lieder zum Glauben 2"/>
     <meta name="author" content="Leonard Lemke"/>
     <meta name="publisher" content="Leonard Lemke"/>
+    <meta name="keywords"
+          content="NAK Buch, NAKBuch, nakbuch, NAK, nak, Buch, Gesangbuch, Chorbuch, Jugendliederbuch, Ergänzungsheft, Chorliedersammlung 2, Lieder zum Glauben 2"/>
 
     <!-- Facebook Meta Tags -->
     <meta property="og:url" content="https://www.nakbuch.de">
@@ -67,6 +68,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.js" type="text/javascript"></script>
     <script type="text/javascript">
+    //PDF Library
     pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.worker.min.js";
     pdfRenderOptions = {
       cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/cmaps/',
@@ -81,7 +83,7 @@
 
     <script>
     // The value below is injected by flutter build, do not touch.
-    var serviceWorkerVersion = "2406121957";
+    var serviceWorkerVersion = "2328021156";
     </script>
     <!-- This script adds the flutter initialization JS code -->
     <script src="flutter.js" defer></script>
@@ -153,7 +155,13 @@
        }
      }).then(function (engineInitializer) {
        loading.classList.add('main_done');
-       return engineInitializer.initializeEngine();
+       let searchParams = new URLSearchParams(window.location.search);
+       if (searchParams.has('renderer')) {
+         console.log(searchParams.get('renderer') + ' renderer requested in the URL');
+         return engineInitializer.initializeEngine({renderer: searchParams.get('renderer')});
+       } else {
+         return engineInitializer.initializeEngine();
+       }
      }).then(function (appRunner) {
        loading.classList.add('init_done');
        return appRunner.runApp();
